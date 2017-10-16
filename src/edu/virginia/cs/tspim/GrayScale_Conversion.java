@@ -1,3 +1,4 @@
+package edu.virginia.cs.tspim;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
@@ -29,6 +30,7 @@ class GrayScale_Conversion {
 
         Mat mat1 = new Mat(image.getHeight(),image.getWidth(),CvType.CV_8UC1);
         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+       
 
         byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
         mat1.get(0, 0, data1);
@@ -38,6 +40,7 @@ class GrayScale_Conversion {
         File ouptut = new File("grayscale.jpg");
         ImageIO.write(image1, "jpg", ouptut);
         
+       
      } catch (Exception e) {
         System.out.println("Error: " + e.getMessage());
      }

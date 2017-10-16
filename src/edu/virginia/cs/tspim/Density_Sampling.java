@@ -1,3 +1,4 @@
+package edu.virginia.cs.tspim;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
