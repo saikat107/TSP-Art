@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.opencv.core.Mat;
+
 public class Util {
 	
 	/**
@@ -44,5 +46,24 @@ public class Util {
 		else{
 			System.out.print(message);
 		}
+	}
+	
+	/**
+	 * 
+	 * @param image, must be a greyscale image
+	 * @return
+	 */
+	public static double getAverageIntensityFromImage(Mat image){
+		int row = image.rows();
+		int col = image.cols();
+		long total = 0;
+		for (int i = 0; i < row; i++){
+			for (int j = 0; j < col; j++){
+				total += image.get(i, j)[0];
+			}
+		}
+		long totalPixels = row * (long) col;
+		double avg = total / (double)totalPixels;
+		return avg;
 	}
 }
