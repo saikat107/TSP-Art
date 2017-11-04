@@ -53,13 +53,13 @@ public class Util {
 	
 	public static void writeImage(int [][]arr, String filename)
 	{
-		BufferedImage img = new BufferedImage(arr.length, arr[0].length,BufferedImage.TYPE_BYTE_GRAY);
+		BufferedImage img = new BufferedImage(arr[0].length, arr.length,BufferedImage.TYPE_BYTE_GRAY);
 		Util.logln("Writing Sample");
-		for(int i=0;i<arr.length;i++)
+		for(int i=0;i<arr[0].length;i++)
 		{
-			for(int j=0;j<arr[0].length;j++)
+			for(int j=0;j<arr.length;j++)
 			{
-				img.setRGB(i, j, arr[i][j]);
+				img.setRGB(i, j, arr[j][i]);
 			}
 		}
 		File f = new File(filename);
