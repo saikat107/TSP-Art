@@ -1,8 +1,13 @@
 package edu.virginia.cs.tspim.util;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 public class Util {
 	
@@ -43,6 +48,26 @@ public class Util {
 		}
 		else{
 			System.out.print(message);
+		}
+	}
+	
+	public static void writeImage(int [][]arr, String filename)
+	{
+		BufferedImage img = new BufferedImage(arr.length, arr[0].length,BufferedImage.TYPE_BYTE_GRAY);
+		Util.logln("Writing Sample");
+		for(int i=0;i<arr.length;i++)
+		{
+			for(int j=0;j<arr[0].length;j++)
+			{
+				img.setRGB(i, j, arr[i][j]);
+			}
+		}
+		File f = new File(filename);
+		try {
+			ImageIO.write(img, "jpg", f);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }
