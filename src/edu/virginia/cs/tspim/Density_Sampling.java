@@ -12,25 +12,39 @@ public class Density_Sampling {
 		threshold = avg;
 	    presampled_array = new int [mat.length][mat[0].length];
 		presampled_array = mat;
-		sampled_array = new int [mat.length-1][mat[0].length-1];
+		//sampled_array = new int [mat.length-1][mat[0].length-1];
+		sampled_array = new int [mat.length/2][mat[0].length/2];
 		
 	}
 	
 	void gen_Sample()
 	{
 		
-		System.out.println(presampled_array.length + " "+presampled_array[0].length);
-		//int k=0,l=0;
-		for(int i=0,k=0;i<presampled_array.length-1;i++,k++)
+		//System.out.println(presampled_array.length + " "+presampled_array[0].length);
+		
+		for(int k=0;k<presampled_array.length-1;k++)
 		{
 			
-			for(int j=0,l=0;j<presampled_array[0].length-1;j++,l++)
+			for(int l=0;l<presampled_array[0].length-1;l++)
+			{
+				//sampled_array[k][l]=(presampled_array[i][j]+presampled_array[i+1][j]+presampled_array[i][j+1]+presampled_array[i+1][j+1])/4;
+				System.out.println(k+ " "+ l+ ": "+presampled_array[k][l]+" ");
+
+			}
+		}
+		//int k=0,l=0;
+		for(int i=0,k=0;i<presampled_array.length-1;i+=2,k++)
+		{
+			
+			for(int j=0,l=0;j<presampled_array[0].length-1;j+=2,l++)
 			{
 				sampled_array[k][l]=(presampled_array[i][j]+presampled_array[i+1][j]+presampled_array[i][j+1]+presampled_array[i+1][j+1])/4;
+				//System.out.println(k+ " "+ l+ ": "+sampled_array[k][l]+" ");
+
 			}
 		}
 		
-		/*for(int i=0;i<sampled_array.length;i++)
+		for(int i=0;i<sampled_array.length;i++)
 		{
 			for(int j=0;j<sampled_array[0].length;j++)
 			{
@@ -38,7 +52,10 @@ public class Density_Sampling {
 			}
 			System.out.println();
 		}
-		System.out.println(sampled_array.length + " "+sampled_array[0].length);*/
+		
+		Util.writeImage(sampled_array, "test.jpg"); 
+		System.out.println(sampled_array.length + " "+sampled_array[0].length);
+		System.out.println(presampled_array.length + " "+presampled_array[0].length);
 		
 	}
 

@@ -40,8 +40,8 @@ class GrayScale_Conversion {
         mat.put(0, 0, data);
                 
         Mat mat1 = new Mat(image.getHeight(),image.getWidth(),CvType.CV_8UC1);
-        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
-        //Imgproc.threshold(mat,mat1, 127,255, Imgproc.THRESH_BINARY);
+        //Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+        Imgproc.threshold(mat,mat1, 127,255, Imgproc.THRESH_BINARY);
 
         byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
         mat1.get(0, 0, data1);
@@ -51,8 +51,8 @@ class GrayScale_Conversion {
         
      
        Mat mat2 = new Mat(image1.getHeight(),image1.getWidth(),CvType.CV_8UC1);
-       //Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
-       Imgproc.threshold(mat1,mat2, 127,255, Imgproc.THRESH_BINARY);
+       Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+       //Imgproc.threshold(mat1,mat2, 127,255, Imgproc.THRESH_BINARY);
 
        byte[] data2 = new byte[mat2.rows() * mat2.cols() * (int)(mat1.elemSize())];
        mat2.get(0, 0, data2);
@@ -82,7 +82,7 @@ class GrayScale_Conversion {
        Density_Sampling s = new Density_Sampling(sample_pre_array,average_threshold);
        s.gen_Sample();
        
-       File ouptut = new File("grayscale.jpg");
+       File ouptut = new File("graymona.jpg");
        ImageIO.write(image1, "jpg", ouptut);
         
            
