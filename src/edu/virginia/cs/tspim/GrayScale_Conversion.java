@@ -9,6 +9,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
+import edu.virginia.cs.tspim.util.Util;
+
 class GrayScale_Conversion {
 	
 	String image_file;
@@ -40,8 +42,8 @@ class GrayScale_Conversion {
         mat.put(0, 0, data);
                 
         Mat mat1 = new Mat(image.getHeight(),image.getWidth(),CvType.CV_8UC1);
-        //Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
-        Imgproc.threshold(mat,mat1, 127,255, Imgproc.THRESH_BINARY);
+        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+        //Imgproc.threshold(mat,mat1, 127,255, Imgproc.THRESH_BINARY);
 
         byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
         mat1.get(0, 0, data1);
@@ -50,28 +52,29 @@ class GrayScale_Conversion {
         image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
         
      
-       Mat mat2 = new Mat(image1.getHeight(),image1.getWidth(),CvType.CV_8UC1);
-       Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+//       Mat mat2 = new Mat(image1.getHeight(),image1.getWidth(),CvType.CV_8UC1);
+//       Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
        //Imgproc.threshold(mat1,mat2, 127,255, Imgproc.THRESH_BINARY);
 
-       byte[] data2 = new byte[mat2.rows() * mat2.cols() * (int)(mat1.elemSize())];
-       mat2.get(0, 0, data2);
-       sample_pre_array = new int [mat2.rows()][mat2.cols()];
-       
-       for(int i=0;i<mat2.rows();i++)
+      // byte[] data2 = new byte[mat1.rows() * mat1.cols() * (int)(mat1.elemSize())];
+       //mat1.get(0, 0, data2);
+       sample_pre_array = new int [mat1.rows()][mat1.cols()];
+       Util.logln(mat1.get(0,0).length);
+       for(int i=0;i<mat1.rows();i++)
        {
-       	for(int j=0;j<mat2.cols();j++)
+       	for(int j=0;j<mat1.cols();j++)
        	{
-       		int a = data2[i+j] & 0xff;
+       		//int a = data2[i*mat2.cols()+j] & 0xff;
+       		
        		//System.out.print(a+" "); 
-       		sample_pre_array[i][j]=a;
+       		sample_pre_array[i][j] = (int)mat1.get(i, j)[0];
        	}
        	//System.out.println();
        }
        
-       for(int i=0;i<mat2.rows();i++)
+       for(int i=0;i<mat1.rows();i++)
        {
-       	for(int j=0;j<mat2.cols();j++)
+       	for(int j=0;j<mat1.cols();j++)
        	{
        		sum+=sample_pre_array[i][j]; 
        	}
