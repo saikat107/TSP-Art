@@ -1,5 +1,6 @@
 package edu.virginia.cs.tspim.util;
 
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Util {
 	
@@ -51,15 +55,36 @@ public class Util {
 		}
 	}
 	
-	public static void writeImage(int [][]arr, String filename)
-	{
+	public static void viewImage(int[][] arr, String fileName){
 		BufferedImage img = new BufferedImage(arr[0].length, arr.length,BufferedImage.TYPE_BYTE_GRAY);
 		Util.logln("Writing Sample");
 		for(int i=0;i<arr[0].length;i++)
 		{
 			for(int j=0;j<arr.length;j++)
 			{
-				img.setRGB(i, j, arr[j][i]);
+				img.setRGB(i, j, ( arr[j][i] << 12) | (arr[j][i] << 8) | (arr[j][i] << 4));
+			}
+		}
+		JFrame frame = new JFrame(fileName);
+		JLabel label = new JLabel();
+		label.setIcon(new ImageIcon(img));
+		frame.add(label);
+		frame.setPreferredSize(new Dimension(arr.length, arr[0].length));
+		frame.setSize(new Dimension(arr[0].length, arr.length));
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setVisible(true);
+	}
+	
+	public static void writeImage(int [][]arr, String filename)
+	{
+		viewImage(arr, filename);
+		BufferedImage img = new BufferedImage(arr[0].length, arr.length,BufferedImage.TYPE_BYTE_GRAY);
+		Util.logln("Writing Sample");
+		for(int i=0;i<arr[0].length;i++)
+		{
+			for(int j=0;j<arr.length;j++)
+			{
+				img.setRGB(i, j, ( arr[j][i] << 12) | (arr[j][i] << 8) | (arr[j][i] << 4));
 			}
 		}
 		File f = new File(filename);
@@ -69,5 +94,15 @@ public class Util {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static int genarateRandom(int low, int high){
+		double prob = Math.random();
+		return (int)Math.round(low + (high - low) * prob);
+	}
+	
+	public static void main(String args[]){
+		for(int i = 0; i < 10; i++)
+			Util.logln(genarateRandom(0, 5));
 	}
 }
