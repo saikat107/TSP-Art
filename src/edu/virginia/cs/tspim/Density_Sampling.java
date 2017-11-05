@@ -1,5 +1,6 @@
 package edu.virginia.cs.tspim;
 
+import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
 public class Density_Sampling {
@@ -28,7 +29,7 @@ public class Density_Sampling {
 			for(int l=0;l<presampled_array[0].length-1;l++)
 			{
 				//sampled_array[k][l]=(presampled_array[i][j]+presampled_array[i+1][j]+presampled_array[i][j+1]+presampled_array[i+1][j+1])/4;
-				System.out.println(k+ " "+ l+ ": "+presampled_array[k][l]+" ");
+				//System.out.println(k+ " "+ l+ ": "+presampled_array[k][l]+" ");
 
 			}
 		}
@@ -48,15 +49,16 @@ public class Density_Sampling {
 		{
 			for(int j=0;j<sampled_array[0].length;j++)
 			{
-				System.out.print(sampled_array[i][j]+" ");
+				//System.out.print(sampled_array[i][j]+" ");
 			}
-			System.out.println();
+	//		System.out.println();
 		}
 		
-		Util.writeImage(sampled_array, "test.jpg"); 
+		Util.writeImage(sampled_array, "Shortened/" + Config.fileName); 
 		System.out.println(sampled_array.length + " "+sampled_array[0].length);
 		System.out.println(presampled_array.length + " "+presampled_array[0].length);
 		
 	}
+	
 
 }
