@@ -20,6 +20,7 @@ class GrayScale_Conversion {
 	float average_threshold;
 	int [][]sample_pre_array;
 	ArrayList<Node> nodeList = new ArrayList<Node>();
+	double [][]adjacency_matrix;
 	
 	GrayScale_Conversion(String img_file)
 	{
@@ -109,13 +110,48 @@ class GrayScale_Conversion {
         				n.set_j(y);
         			}
         			nodeList.add(n);
-        			//Util.logln("Where");
         		}
         	}
         }
         
         Util.writeImage(nodesImg, "NodesImg/" + Config.fileName );
         Util.logln(nodeList.size());
+        adjacency_matrix = new double [nodeList.size()][nodeList.size()];
+        
+        for (int i =0; i<nodeList.size();i++)
+        {
+        	Node v1 = nodeList.get(i);
+        	for(int j=0;j<nodeList.size();j++)
+        	{
+        		Node v2 = nodeList.get(j);
+        		double distance = Math.sqrt((v1.get_i()-v2.get_i())*(v1.get_i()-v2.get_i())+(v1.get_i()-v2.get_i())*(v1.get_j()-v2.get_j()));
+        		adjacency_matrix[i][j] = distance;
+        		if(i==j)
+        		{
+        			adjacency_matrix[i][j] = 0.0;
+        			continue;
+        		}
+                if (adjacency_matrix[i][j] == 0.0)
+
+                {
+
+                    adjacency_matrix[i][j] = Config.MAX_VALUE;
+
+                }
+        		
+        			
+        	}
+        }
+        /*for(int i =0;i<nodeList.size();i++)
+        {
+        	for(int j=0;j<nodeList.size();j++)
+        		System.out.print(adjacency_matrix[i][j]+ "\t");
+        	System.out.println();
+            
+        }*/
+        KruskalAlgorithm al = new KruskalAlgorithm(nodeList.size());
+        al.kruskalAlgorithm(adjacency_matrix,nodeList);
+        
         Density_Sampling s = new Density_Sampling(sample_pre_array,average_threshold);
         s.gen_Sample();
        
