@@ -148,8 +148,7 @@ public class KruskalAlgorithm
 			for (int destination = 0; destination < numberOfVertices; destination++)
 
 			{
-				if(spanning_tree[source][destination]!=0.0)
-				{
+				
 					TreeEdges e = new TreeEdges();
 					e.set_s(nodeList.get(source));
 					e.set_d(nodeList.get(destination));
@@ -161,7 +160,7 @@ public class KruskalAlgorithm
 					wr.write(" ");
 					wr.write(String.valueOf(spanning_tree[source][destination]));
 					wr.write("\n");
-				}
+				
 				//System.out.print(spanning_tree[source][destination] + "\t");
 				
 			}
@@ -171,6 +170,9 @@ public class KruskalAlgorithm
 		}
 		System.out.println(tree.size());
 		wr.close();
+		Image im = TourExtractor.extractTourImage(tree);
+		im.showImage();
+		
 
 	}
 /*
