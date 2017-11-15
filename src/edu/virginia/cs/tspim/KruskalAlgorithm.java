@@ -2,6 +2,8 @@ package edu.virginia.cs.tspim;
 
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -29,13 +31,16 @@ public class KruskalAlgorithm
 		spanning_tree = new double[numberOfVertices][numberOfVertices];
 
 	}
+	
+	public  ArrayList<TreeEdges> get_List()
+	{
+		return tree;
+	}
 
 	public void kruskalAlgorithm(double adjacencyMatrix[][], ArrayList<Node> nodeList) throws Exception
 
 	{
-		FileOutputStream fos = new FileOutputStream("Output");
-	    DataOutputStream dos = new DataOutputStream(fos);
-
+		Writer wr = new FileWriter("Output.txt");
 		boolean finished = false;
 
 		for (int source = 0; source < numberOfVertices; source++) {
@@ -150,21 +155,22 @@ public class KruskalAlgorithm
 					e.set_d(nodeList.get(destination));
 					e.set_weight(spanning_tree[source][destination]);
 					tree.add(e);
+					wr.write(String.valueOf(source));
+					wr.write(" ");
+					wr.write(String.valueOf(destination));
+					wr.write(" ");
+					wr.write(String.valueOf(spanning_tree[source][destination]));
+					wr.write("\n");
 				}
-				System.out.print(spanning_tree[source][destination] + "\t");
-				dos.writeInt(source);
-				dos.writeChar(' ');
-				dos.write(destination);
-				dos.writeChar(':');
-				dos.writeDouble(spanning_tree[source][destination]);
-				dos.writeChar('\n');
-
+				//System.out.print(spanning_tree[source][destination] + "\t");
+				
 			}
 
-			System.out.println();
+			//System.out.println();
 
 		}
-		dos.close();
+		System.out.println(tree.size());
+		wr.close();
 
 	}
 /*
