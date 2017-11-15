@@ -5,6 +5,15 @@ public class TreeEdges {
 	Node d;
 	double weight;
 	
+	public TreeEdges(Node s, Node d){
+		this.s = s;
+		this.d = d;
+	}
+	
+	public TreeEdges(){
+		
+	}
+	
 	public void set_s(Node x)
 	{
 		s = x;
@@ -33,4 +42,7 @@ public class TreeEdges {
 		return weight;
 	}
 
+	public String toString(){
+		return s.toString() + " -> " + d.toString();
+	}
 }

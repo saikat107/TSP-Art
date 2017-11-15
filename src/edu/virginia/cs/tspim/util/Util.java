@@ -13,7 +13,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import edu.virginia.cs.tspim.Node;
+import edu.virginia.cs.tspim.TreeEdges;
+
 public class Util {
+	
+	private static final int INFINITE = ~(1<<31); 
 	
 	/**
 	 * This method is for logging and debugging.
@@ -101,8 +106,90 @@ public class Util {
 		return (int)Math.round(low + (high - low) * prob);
 	}
 	
-	public static void main(String args[]){
-		for(int i = 0; i < 10; i++)
-			Util.logln(genarateRandom(0, 5));
+	
+	public static double getSlope(Node n1, Node n2){
+		int ydiff = n2.getY() - n1.getY();
+		int xdiff = n2.getX() - n1.getX();
+		if(xdiff == 0){
+			return (double)INFINITE;
+		}
+		else{
+			return (double)ydiff / xdiff;
+		}
+	}
+	
+	public static boolean isParallelLine(TreeEdges edge1, TreeEdges edge2){
+		Node s1 = edge1.getNode_s();
+		Node s2 = edge1.getNode_d();
+		double slope1 = getSlope(s1, s2);
+		Util.logln(slope1);
+		Node s3 = edge2.getNode_s();
+		Node s4 = edge2.getNode_d();
+		double slope2 = getSlope(s3, s4);
+		Util.logln(slope2);
+		return Math.abs(slope1 - slope2) < 1e-10;
+	}
+	
+	public static double min(double a, double b){
+		return a < b?a:b;
+	}
+	
+	public static double max(double a, double b){
+		return a > b? a : b;
+	}
+	
+	public static boolean isLineCrossing(TreeEdges edge1, TreeEdges edge2){
+		if(isParallelLine(edge1, edge2)){
+			return false;
+		}
+		else{
+			Node s1 = edge1.getNode_s();
+			Node s2 = edge1.getNode_d();
+			Node s3 = edge2.getNode_s();
+			Node s4 = edge2.getNode_d();
+			int x1 = s1.getX();
+			int y1 = s1.getY();
+			int x2 = s2.getX();
+			int y2 = s2.getY();
+			int x3 = s3.getX();
+			int y3 = s3.getY();
+			int x4 = s4.getX();
+			int y4 = s4.getY();
+			double a1 = y1 - y2;
+			double b1 = x2 - x1;
+			double c1 = -a1*x1 - b1*y1;
+			
+			double a2 = y3 - y4;
+			double b2 = x4 - x3;
+			double c2 = -a2*x3 - b2*y3;
+			double det = a1* b2 - a2 * b1;
+			double x = (b1 * c2 - b2 * c1) / det;
+			double y = (c1 * a2 - c2 * a1) / det;
+			Util.logln(x + " " + y);
+			boolean insideLine1 = x > min(x1, x2) && x < max(x1, x2) && y > min(y1, y2) && y < max(y1, y2);
+			boolean insideLine2 = x > min(x3, x4) && x < max(x3, x4) && y > min(y3, y4) && y < max(y3, y4);
+			return insideLine1 && insideLine2;
+		}
+	}
+	
+	public static void swapDestinationPointInEdges(TreeEdges edge1, TreeEdges edge2){
+		if(isLineCrossing(edge1, edge2)){
+			Node d1 = edge1.getNode_d();
+			Node d2 = edge2.getNode_d();
+			edge1.set_d(d2);
+			edge2.set_d(d1);
+		}
+	}
+	
+	public static void main(String[] args) {
+		/*Node s1 = new Node(0, 0);
+		Node s2 = new Node(10, 10);
+		Node s3 = new Node(10, 0);
+		Node s4 = new Node(0, 10);
+		TreeEdges edge1 = new TreeEdges(s1, s2);
+		TreeEdges edge2 = new TreeEdges(s3, s4);
+		swapDestinationPointInEdges(edge1, edge2);
+		Util.logln(edge1);
+		Util.logln(edge2);*/
 	}
 }
