@@ -98,16 +98,16 @@ class GrayScale_Conversion {
         				int x = i+Util.genarateRandom(0, Config.BLOCK_SIZE-1);
         				int y = j+Util.genarateRandom(0, Config.BLOCK_SIZE-1); 
         				nodesImg[x][y] = 0;
-        				n.set_i(x);
-        				n.set_j(y);
+        				n.setX(x);
+        				n.setY(y);
         				
         			}
         			else{
         				int x = i+Util.genarateRandom(0, numRows - i - 1);
         				int y = j+Util.genarateRandom(0, numCols - j -1);
         				nodesImg[x][y] = 0;
-        				n.set_i(x);
-        				n.set_j(y);
+        				n.setX(x);
+        				n.setY(y);
         			}
         			nodeList.add(n);
         		}
@@ -124,7 +124,7 @@ class GrayScale_Conversion {
         	for(int j=0;j<nodeList.size();j++)
         	{
         		Node v2 = nodeList.get(j);
-        		double distance = Math.sqrt((v1.get_i()-v2.get_i())*(v1.get_i()-v2.get_i())+(v1.get_i()-v2.get_i())*(v1.get_j()-v2.get_j()));
+        		double distance = Math.sqrt((v1.getX()-v2.getX())*(v1.getX()-v2.getX())+(v1.getX()-v2.getX())*(v1.getY()-v2.getY()));
         		adjacency_matrix[i][j] = distance;
         		if(i==j)
         		{

@@ -1,33 +1,38 @@
 package edu.virginia.cs.tspim;
 
 public class Node {
-	int i;
-	int j;
+	int x;
+	int y;
 	
 	Node()
 	{
-		i = 0;
-		j =0;
+		x = 0;
+		y =0;
 	}
 	
-	public void set_i(int x)
-	{
-		i=x;
+	public Node(int x, int y){
+		this.x = x;
+		this.y = y;
 	}
 	
-	public void set_j(int y)
+	public void setX(int x)
 	{
-		j = y;
+		this.x=x;
 	}
 	
-	public int get_i()
+	public void setY(int y)
 	{
-		return i;
+		this.y = y;
 	}
 	
-	public int get_j()
+	public int getX()
 	{
-		return j;
+		return x;
+	}
+	
+	public int getY()
+	{
+		return y;
 	}
 
 }

@@ -11,6 +11,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import edu.virginia.cs.tspim.util.Util;
+
 public class Image {
 	int [][] nodes;
 	int width;

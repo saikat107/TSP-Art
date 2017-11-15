@@ -9,12 +9,14 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
+import edu.virginia.cs.tspim.util.Util;
+
 
 public class TourExtractor {
 	static int []x = new int[]{350,	200, 200, 300, 300, 50,  50,  10,  50,  60,  60,  50,  300, 350, 350, 400, 350, 200, 200, 100, 100, 100, 200, 150, 200, 200, 350, 400, 400, 500, 500, 250, 350, 400, 400, 600, 600, 550, 550, 300, 600, 650, 650, 595, 595, 400, 595, 600, 600, 698};																																						
 	static int []y = new int[]{70, 	80,  80,  140, 140, 210, 210, 210, 210, 240, 240, 280, 140, 210, 210, 210, 210, 280, 280, 280, 280, 350, 280, 350, 280, 350, 210, 280, 280, 280, 280, 350, 70,  180, 180, 292, 292, 468, 468, 648, 292, 492, 492, 468, 468, 648, 468, 692, 292, 548};
 	
-	public void getTour(int []x, int []y){
+	public static Image getTour(int []x, int []y){
 		assert x.length == y.length && x.length%2 == 0;
 		Util.logln(x.length);
 		Map<String, TreeNode> nodesMap = new HashMap<String, TreeNode>();
@@ -65,10 +67,22 @@ public class TourExtractor {
 			img.drawLine(previousDrawn.getNode(), root.getNode());
 		}
 		img.showImage();
+		return img;
 	}
 	
-	public void getTour(List<TreeEdges>)
-	
+	public static Image extractTourImage(List<TreeEdges> edgeList){
+		int numEdges = edgeList.size();
+		int []xCordinates = new int[2*numEdges];
+		int []yCordinates = new int[2*numEdges];
+		int x = 0, y = 0;
+		for(TreeEdges edge : edgeList){
+			xCordinates[x++] = edge.s.getX();
+			yCordinates[y++] = edge.s.getY();
+			xCordinates[x++] = edge.d.getX();
+			yCordinates[y++] = edge.d.getY();
+		}
+		return getTour(xCordinates, yCordinates);
+	}
 	/*public static void main(String[] args) {
 		Main main = new Main();
 		main.getTour(x, y);
