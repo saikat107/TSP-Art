@@ -38,4 +38,11 @@ public class Node {
 	public String toString(){
 		return "(" + x + "," + y + ")";
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof Node)
+			return this.x == ((Node)o).x && this.y == ((Node)o).y;
+		return false;
+	}
 }

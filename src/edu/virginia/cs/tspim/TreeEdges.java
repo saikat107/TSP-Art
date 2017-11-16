@@ -45,4 +45,21 @@ public class TreeEdges {
 	public String toString(){
 		return s.toString() + " -> " + d.toString();
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof TreeEdges){
+			TreeEdges edge = (TreeEdges)o;
+			if(edge.s.equals(this.s)){
+				return edge.d.equals(this.d);
+			}
+			else if(edge.s.equals(this.d)){
+				return edge.d.equals(this.s);
+			}
+			else{
+				return false;
+			}
+		}
+		return false;
+	}
 }
