@@ -70,7 +70,7 @@ public class TourExtractor {
 
 			img.drawLine(previousDrawn, root);
 		}
-		img.showImage("TOURIMG");
+		img.showImage("dlngkdsjngkdasj");
 		return img;
 	}
 	
