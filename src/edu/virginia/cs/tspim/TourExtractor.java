@@ -64,6 +64,9 @@ public class TourExtractor {
 			st.push(r);
 			while(!st.isEmpty()){
 				Node top = st.pop();
+				if(visitedNodes.contains(top)){
+					continue;
+				}
 				visitedNodes.add(top);
 				if(previousDrawn != null){
 					TreeEdges nEdge = new TreeEdges(previousDrawn, top);
