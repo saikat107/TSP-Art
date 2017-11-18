@@ -16,7 +16,7 @@ class MST {
 	class Edge implements Comparable<Edge> {
 		int src, dest;
 		double weight;
-
+		
 		// Comparator function used for sorting edges
 		// based on their weight
 		public int compareTo(Edge compareEdge) {
@@ -41,12 +41,16 @@ class MST {
 	ArrayList<Node> nodeList; 
 	ArrayList<TreeEdges> tree = new ArrayList<TreeEdges>();
 	int [][]edgeList;
+	int check_all_nodes[];
 	
 	// Creates a graph with V vertices and E edges
 	MST(int v, int e,ArrayList<Node> nodeList) {
 		V = v;
 		E = e;
+		Util.logln(V);
+		Util.logln(E);
 		this.nodeList=nodeList;
+		check_all_nodes= new int[nodeList.size()];
 		edge = new Edge[E];
 		for (int i = 0; i < e; ++i)
 			edge[i] = new Edge();
@@ -87,6 +91,7 @@ class MST {
 	void KruskalMST() throws IOException {
 		//Util.logln("Inside Kruskal MST");
 		Writer wr = new FileWriter("output_new.csv");
+		Writer wr1 = new FileWriter("check.csv");
 		Edge result[] = new Edge[V]; // Tnis will store the resultant MST
 		int e = 0; // An index variable, used for result[]
 		int i = 0; // An index variable, used for sorted edges
@@ -126,7 +131,7 @@ class MST {
 			// Else discard the next_edge
 		}
 		 
-		//System.out.println(result.length);
+		System.out.println("Length of Result Array: "+result.length);
 		//int []check = new int[nodeList.size()];
 		//TreeEdges ed = new TreeEdges();
 		int [][]edgeList=new int[nodeList.size()][2];
@@ -141,16 +146,43 @@ class MST {
 			tree.add(ed);
 			//tree.add(ed1);
 			
+			wr.write(String.valueOf(nodeList.get(result[i].src)));
+			wr.write(",");
+			wr.write(String.valueOf(nodeList.get(result[i].dest)));
+			wr.write(",");	
+			wr.write(String.valueOf(result[i].weight));
+			wr.write(",");
 			wr.write(String.valueOf(result[i].src));
 			wr.write(",");
 			wr.write(String.valueOf(result[i].dest));
-			wr.write(",");	
-			wr.write(String.valueOf(result[i].weight));
+			//wr.write(",");
 			wr.write("\n");
 			//System.out.println(result[i].src + " -- " + result[i].dest + " == " + result[i].weight);
 		}
 		
 		wr.close();
+		
+		for(i=0;i<result.length;i++)
+		{
+			++check_all_nodes[result[i].src];
+			++check_all_nodes[result[i].dest];
+		}
+		
+		for(i=0;i<check_all_nodes.length;i++)
+		{
+			wr1.write(String.valueOf(check_all_nodes[i]));
+			//wr.write(String.valueOf(result[i].weight));
+			wr1.write(",");
+			wr1.write(String.valueOf(nodeList.get(result[i].src)));
+			wr1.write(",");
+			wr1.write(String.valueOf(nodeList.get(result[i].dest)));
+			wr1.write("\n");
+		}
+		
+		wr1.close();
+		
+		
+		
 		ConnectedComponents ob = new ConnectedComponents();
 		System.out.println("Number of Connected Components: "+ob.countComponents(nodeList.size(), edgeList));
 		//System.out.println(tree.size());
@@ -179,5 +211,4 @@ class MST {
 		//im.showImage("MST TOUR IMAGE");
 		im.writeImageToDisk("MSTIMG.jpg");
 	}
-	
 }

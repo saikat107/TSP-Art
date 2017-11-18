@@ -5,10 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import edu.virginia.cs.tspim.util.Util;
+
 public class ConnectedComponents {
 	
 	
 	public int countComponents(int n, int[][] edges) {
+		Util.logln(edges.length);
+		Util.logln(edges[0].length);
+		
 		if (n <= 0 || edges == null) {
 			return 0;
 		}

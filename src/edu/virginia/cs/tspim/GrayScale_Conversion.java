@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
@@ -56,7 +58,7 @@ class GrayScale_Conversion {
 			BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
 			image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 			sample_pre_array = new int[mat1.rows()][mat1.cols()];
-			//Util.logln(mat1.get(0, 0).length);
+			// Util.logln(mat1.get(0, 0).length);
 			for (int i = 0; i < mat1.rows(); i++) {
 				for (int j = 0; j < mat1.cols(); j++) {
 					sample_pre_array[i][j] = (int) mat1.get(i, j)[0];
@@ -69,7 +71,7 @@ class GrayScale_Conversion {
 			}
 
 			average_threshold = sum / (mat1.rows() * mat1.cols());
-			//Util.logln(average_threshold);
+			// Util.logln(average_threshold);
 			int numRows = mat1.rows();
 			int numCols = mat1.cols();
 			int[][] nodesImg = new int[numRows][numCols];
@@ -113,7 +115,23 @@ class GrayScale_Conversion {
 			}
 
 			Util.writeImage(nodesImg, "NodesImg/" + Config.fileName);
-			//Util.logln(nodeList.size());
+			Util.logln(nodeList.size());
+			Writer w = new FileWriter("Node.csv");
+			
+			for(int i=0;i<nodeList.size();i++)
+			{
+				Node n = nodeList.get(i);
+				w.write(String.valueOf(n.x)+ " "+String.valueOf(n.y));
+				w.write("\n");
+			}
+			
+			w.close();
+			
+			//ArrayList<Node>ulist=new ArrayList<Node>();
+			
+			nodeList = (ArrayList<Node>) nodeList.stream().distinct().collect(Collectors.toList());
+			
+			Util.logln(nodeList.size());
 			// adjacency_matrix = new double[nodeList.size()][nodeList.size()];
 			/*
 			 * for (int i =0; i<nodeList.size();i++) { Node v1 =
@@ -145,33 +163,33 @@ class GrayScale_Conversion {
 			 * KruskalAlgorithm al = new KruskalAlgorithm(nodeList.size());
 			 * //al.kruskalAlgorithm(adjacency_matrix,nodeList);
 			 */
-			MST gr = new MST(nodeList.size(), (nodeList.size() * (nodeList.size()+1))/2,nodeList);
-			int l =0;
-			Writer w = new FileWriter("Test.csv");
+			MST gr = new MST(nodeList.size(), ((nodeList.size() * (nodeList.size() - 1)) / 2), nodeList);
+			int l = 0;
+			Writer w1 = new FileWriter("Test.csv");
 
-			for (int i = 0; i < nodeList.size(); i++) {
+			for (int i = 0; i < nodeList.size() - 1; i++) {
 				Node v1 = nodeList.get(i);
-				for (int j = i; j < nodeList.size(); j++) {
+				for (int j = i + 1; j < nodeList.size(); j++) {
 					Node v2 = nodeList.get(j);
-					double distance = Math.sqrt((v1.getX() - v2.getX()) * (v1.getX() - v2.getX())
-							+ (v1.getY() - v2.getY()) * (v1.getY() - v2.getY()));
-					gr.edge[l].src = i;
-					gr.edge[l].dest = j;
-					if(distance==0)
-					    gr.edge[l].weight = Config.MAX_VALUE;
-					else
+					double distance = Math.sqrt(((v1.getX()-v2.getX())*(v1.getX()-v2.getX()))+((v1.getY()-v2.getY())*(v1.getY()-v2.getY())));
+					if(i!=j)
+					{
+						gr.edge[l].src = i;
+						gr.edge[l].dest = j;
 						gr.edge[l].weight = distance;
-					w.write(String.valueOf(gr.edge[l].src));
-					w.write(",");
-					w.write(String.valueOf(gr.edge[l].dest));
-					w.write(",");
-					w.write(String.valueOf(gr.edge[l].weight));
-					w.write("\n");
-					
-					l++;
+						w1.write(String.valueOf(gr.edge[l].src));
+						w1.write(",");
+						w1.write(String.valueOf(gr.edge[l].dest));
+						w1.write(",");
+						w1.write(String.valueOf(gr.edge[l].weight));
+						w1.write("\n");
+						l++;
+					}
+
 				}
 			}
-			w.close();
+			Util.logln(l);
+			w1.close();
 			gr.KruskalMST();
 
 			Density_Sampling s = new Density_Sampling(sample_pre_array, average_threshold);
