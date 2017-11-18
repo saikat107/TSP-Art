@@ -3,6 +3,8 @@ package edu.virginia.cs.tspim;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -53,7 +55,7 @@ class GrayScale_Conversion {
 			BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
 			image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 			sample_pre_array = new int[mat1.rows()][mat1.cols()];
-			Util.logln(mat1.get(0, 0).length);
+			//Util.logln(mat1.get(0, 0).length);
 			for (int i = 0; i < mat1.rows(); i++) {
 				for (int j = 0; j < mat1.cols(); j++) {
 					sample_pre_array[i][j] = (int) mat1.get(i, j)[0];
@@ -66,7 +68,7 @@ class GrayScale_Conversion {
 			}
 
 			average_threshold = sum / (mat1.rows() * mat1.cols());
-			Util.logln(average_threshold);
+			//Util.logln(average_threshold);
 			int numRows = mat1.rows();
 			int numCols = mat1.cols();
 			int[][] nodesImg = new int[numRows][numCols];
@@ -110,7 +112,7 @@ class GrayScale_Conversion {
 			}
 
 			Util.writeImage(nodesImg, "NodesImg/" + Config.fileName);
-			Util.logln(nodeList.size());
+			//Util.logln(nodeList.size());
 			// adjacency_matrix = new double[nodeList.size()][nodeList.size()];
 			/*
 			 * for (int i =0; i<nodeList.size();i++) { Node v1 =
@@ -142,8 +144,9 @@ class GrayScale_Conversion {
 			 * KruskalAlgorithm al = new KruskalAlgorithm(nodeList.size());
 			 * //al.kruskalAlgorithm(adjacency_matrix,nodeList);
 			 */
-			Graph gr = new Graph(nodeList.size(), nodeList.size() * nodeList.size(),nodeList);
+			MST gr = new MST(nodeList.size(), nodeList.size() * nodeList.size(),nodeList);
 			int l =0;
+			Writer w = new FileWriter("Test.csv");
 
 			for (int i = 0; i < nodeList.size(); i++) {
 				Node v1 = nodeList.get(i);
@@ -153,11 +156,21 @@ class GrayScale_Conversion {
 							+ (v1.getY() - v2.getY()) * (v1.getY() - v2.getY()));
 					gr.edge[l].src = i;
 					gr.edge[l].dest = j;
+					//if(distance==0)
+					//	gr.edge[l].weight = Config.MAX_VALUE;
+					//else
 					gr.edge[l].weight = distance;
+					w.write(String.valueOf(gr.edge[l].src));
+					w.write(",");
+					w.write(String.valueOf(gr.edge[l].dest));
+					w.write(",");
+					w.write(String.valueOf(gr.edge[l].weight));
+					w.write("\n");
+					
 					l++;
 				}
 			}
-
+			w.close();
 			gr.KruskalMST();
 
 			Density_Sampling s = new Density_Sampling(sample_pre_array, average_threshold);

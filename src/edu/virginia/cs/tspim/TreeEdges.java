@@ -32,5 +32,24 @@ public class TreeEdges {
 	{
 		return weight;
 	}
+	
+	public String toString(){
+		return this.s.toString() + " -> " + this.d.toString();
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if (o instanceof TreeEdges) {
+			TreeEdges edge = (TreeEdges) o;
+			if(this.s.equals(edge.s)){
+				return this.d.equals(edge.d);
+			}
+			else if(this.s.equals(edge.d)) {
+				return this.d.equals(edge.s);
+			}
+			return false;
+		}
+		return false;
+	}
 
 }

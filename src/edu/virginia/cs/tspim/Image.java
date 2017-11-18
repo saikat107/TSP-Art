@@ -34,8 +34,8 @@ public class Image {
 	}
 	
 	public void drawLine(Node a, Node b){
-		Util.logln(a);
-		Util.logln(b);
+//		Util.logln(a);
+//		Util.logln(b);
 		int dx = b.getX() - a.getX();
 		int dy = b.getY() - a.getY();
 		int steps = 0;
@@ -51,7 +51,7 @@ public class Image {
 		double y = a.getY();
 		for(int i = 0; i < steps; i++){
 			Node point = new Node((int)Math.round(x), (int)Math.round(y));
-			Util.logln(point);
+			//Util.logln(point);
 			setNodeInImage(point);
 			x += xImcr;
 			y += yIncr;
@@ -73,9 +73,22 @@ public class Image {
 		ImageIO.write(extractImage(), "jpg", file);
 	}
 	
-	public void showImage(){
+	/*public void showImage(){
 		BufferedImage img = extractImage();
 		JFrame frame = new JFrame("Nodes Image");
+		frame.setIconImage(img);
+		frame.setSize(width, height);
+		JLabel label = new JLabel();
+		label.setIcon(new ImageIcon(img));
+		label.setPreferredSize(new Dimension(height, width));
+		frame.add(label);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
+	}*/
+	
+	public void showImage(String windowTitle){
+		BufferedImage img = extractImage();
+		JFrame frame = new JFrame(windowTitle);
 		frame.setIconImage(img);
 		frame.setSize(width, height);
 		JLabel label = new JLabel();

@@ -77,9 +77,9 @@ public class Util {
 	
 	public static void writeImage(int [][]arr, String filename)
 	{
-		viewImage(arr, filename);
+		//viewImage(arr, filename);
 		BufferedImage img = new BufferedImage(arr[0].length, arr.length,BufferedImage.TYPE_BYTE_GRAY);
-		Util.logln("Writing Sample");
+		//Util.logln("Writing Sample");
 		for(int i=0;i<arr[0].length;i++)
 		{
 			for(int j=0;j<arr.length;j++)
