@@ -145,22 +145,22 @@ class GrayScale_Conversion {
 			 * KruskalAlgorithm al = new KruskalAlgorithm(nodeList.size());
 			 * //al.kruskalAlgorithm(adjacency_matrix,nodeList);
 			 */
-			MST gr = new MST(nodeList.size(), nodeList.size() * nodeList.size(),nodeList);
+			MST gr = new MST(nodeList.size(), (nodeList.size() * (nodeList.size()+1))/2,nodeList);
 			int l =0;
 			Writer w = new FileWriter("Test.csv");
 
 			for (int i = 0; i < nodeList.size(); i++) {
 				Node v1 = nodeList.get(i);
-				for (int j = 0; j < nodeList.size(); j++) {
+				for (int j = i; j < nodeList.size(); j++) {
 					Node v2 = nodeList.get(j);
 					double distance = Math.sqrt((v1.getX() - v2.getX()) * (v1.getX() - v2.getX())
 							+ (v1.getY() - v2.getY()) * (v1.getY() - v2.getY()));
 					gr.edge[l].src = i;
 					gr.edge[l].dest = j;
-					//if(distance==0)
-					//	gr.edge[l].weight = Config.MAX_VALUE;
-					//else
-					gr.edge[l].weight = distance;
+					if(distance==0)
+					    gr.edge[l].weight = Config.MAX_VALUE;
+					else
+						gr.edge[l].weight = distance;
 					w.write(String.valueOf(gr.edge[l].src));
 					w.write(",");
 					w.write(String.valueOf(gr.edge[l].dest));

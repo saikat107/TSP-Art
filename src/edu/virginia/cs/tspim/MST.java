@@ -40,6 +40,7 @@ class MST {
 	Edge edge[]; // collection of all edges
 	ArrayList<Node> nodeList; 
 	ArrayList<TreeEdges> tree = new ArrayList<TreeEdges>();
+	int [][]edgeList;
 	
 	// Creates a graph with V vertices and E edges
 	MST(int v, int e,ArrayList<Node> nodeList) {
@@ -109,8 +110,6 @@ class MST {
 
 		// Number of edges to be taken is equal to V-1
 		while (e < V - 1) {
-			// Step 2: Pick the smallest edge. And increment
-			// the index for next iteration
 			Edge next_edge = new Edge();
 			
 			next_edge = edge[i++];
@@ -126,16 +125,19 @@ class MST {
 			}
 			// Else discard the next_edge
 		}
-
+		 
 		//System.out.println(result.length);
 		//int []check = new int[nodeList.size()];
 		//TreeEdges ed = new TreeEdges();
+		int [][]edgeList=new int[nodeList.size()][2];
 		for (i = 0; i < e; ++i){
 			
 			TreeEdges ed = new TreeEdges();
 			ed.set_s(nodeList.get(result[i].src));
 			ed.set_d(nodeList.get(result[i].dest));
 			ed.set_weight(result[i].weight);
+			edgeList[i][0] = result[i].src;
+			edgeList[i][1] = result[i].dest;
 			tree.add(ed);
 			//tree.add(ed1);
 			
@@ -149,6 +151,8 @@ class MST {
 		}
 		
 		wr.close();
+		ConnectedComponents ob = new ConnectedComponents();
+		System.out.println("Number of Connected Components: "+ob.countComponents(nodeList.size(), edgeList));
 		//System.out.println(tree.size());
 		Set<Node> n = new HashSet<Node>();
 		for(TreeEdges ef: tree)
