@@ -33,8 +33,19 @@ public class TreeEdges {
 		return weight;
 	}
 	
+	public int hashCode(){
+		return this.toString().hashCode() + this.reverseEdge().toString().hashCode();
+	}
+	
 	public String toString(){
 		return this.s.toString() + " -> " + this.d.toString();
+	}
+	
+	public TreeEdges reverseEdge(){
+		TreeEdges edge = new TreeEdges();
+		edge.s = this.d;
+		edge.d = this.s;
+		return edge;
 	}
 	
 	@Override

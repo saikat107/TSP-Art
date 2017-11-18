@@ -56,8 +56,8 @@ public class Density_Sampling {
 		}
 		
 		Util.writeImage(sampled_array, "Shortened/" + Config.fileName); 
-		System.out.println(sampled_array.length + " "+sampled_array[0].length);
-		System.out.println(presampled_array.length + " "+presampled_array[0].length);
+		//System.out.println(sampled_array.length + " "+sampled_array[0].length);
+		//System.out.println(presampled_array.length + " "+presampled_array[0].length);
 		
 	}
 	

@@ -13,10 +13,7 @@ import java.util.Scanner;
 import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
-public class KruskalAlgorithm
-
-{
-
+public class KruskalAlgorithm{
 	List<Edge> edges;
 	int numberOfVertices;
 	int visited[];
@@ -24,7 +21,6 @@ public class KruskalAlgorithm
 	ArrayList<TreeEdges> tree = new ArrayList<TreeEdges>();
 
 	public KruskalAlgorithm(int numberOfVertices) {
-
 		this.numberOfVertices = numberOfVertices;
 		edges = new LinkedList<Edge>();
 		visited = new int[this.numberOfVertices];
@@ -36,117 +32,63 @@ public class KruskalAlgorithm
 		return tree;
 	}
 
-	public void kruskalAlgorithm(double adjacencyMatrix[][], ArrayList<Node> nodeList) throws Exception
-
-	{
+	public void kruskalAlgorithm(double adjacencyMatrix[][], ArrayList<Node> nodeList) throws Exception{
 		Writer wr = new FileWriter("Output.txt");
 		boolean finished = false;
-
 		for (int source = 0; source < numberOfVertices; source++) {
 			for (int destination = 0; destination < numberOfVertices; destination++) {
-
-				if (adjacencyMatrix[source][destination] != Config.MAX_VALUE && source != destination)
-
-				{
-
+				if (adjacencyMatrix[source][destination] != Config.MAX_VALUE && source != destination){
 					Edge edge = new Edge();
-
 					edge.v1 = source;
-
 					edge.v2 = destination;
-
 					edge.weight = adjacencyMatrix[source][destination];
-
 					adjacencyMatrix[destination][source] = Config.MAX_VALUE;
-
 					edges.add(edge);
-
 				}
-
 			}
-
 		}
-
 		Collections.sort(edges, new EdgeComparator());
 		Util.logln("After sort");
-
 		CheckCycle checkCycle = new CheckCycle();
 		// int l =0;
-		for (Edge edge : edges)
-
-		{
+		for (Edge edge : edges){
 			// Util.logln(l);
 			// l++;
 			// Util.logln("Here");
-
-			spanning_tree[edge.v1][edge.v2] = edge.weight;
-
-			spanning_tree[edge.v2][edge.v1] = edge.weight;
-
-			if (checkCycle.checkCycle(spanning_tree, edge.v1))
-
-			{
-
-				spanning_tree[edge.v1][edge.v2] = 0.0;
-
-				spanning_tree[edge.v2][edge.v1] = 0.0;
-
-				edge.weight = -1.0;
-
+			if(edge.weight == 0){
 				continue;
-
 			}
-
+			spanning_tree[edge.v1][edge.v2] = edge.weight;
+			spanning_tree[edge.v2][edge.v1] = edge.weight;
+			if (checkCycle.checkCycle(spanning_tree, edge.v1)){
+				spanning_tree[edge.v1][edge.v2] = 0.0;
+				spanning_tree[edge.v2][edge.v1] = 0.0;
+				edge.weight = -1.0;
+				continue;
+			}
 			visited[edge.v1] = 1;
-
 			visited[edge.v2] = 1;
-
 			Util.logln(visited.length);
-
-			for (int i = 0; i < visited.length; i++)
-
-			{
-				// Util.logln(i);
-
-				if (visited[i] == 0)
-
-				{
+			for (int i = 0; i < visited.length; i++){
+				if (visited[i] == 0){
 					finished = false;
 					break;
-
-				} else
-
-				{
-
+				} else{
 					finished = true;
-
 				}
-
 			}
-
 			if (finished) {
 				Util.logln("FInished");
 				break;
 			}
-
 		}
 
-		System.out.println("The spanning tree is ");
 
 		for (int i = 0; i < numberOfVertices; i++)
+				System.out.print("\t" + i);
 
-			System.out.print("\t" + i);
-
-		System.out.println();
-
-		for (int source = 0; source < numberOfVertices; source++)
-
-		{
-			System.out.print(source + "\t");
-
-			for (int destination = 0; destination < numberOfVertices; destination++)
-
-			{
+		for (int source = 0; source < numberOfVertices; source++){
+			for (int destination = 0; destination < numberOfVertices; destination++)			{
 				if (spanning_tree[source][destination] != 0.0) {
 					TreeEdges e = new TreeEdges();
 					e.set_s(nodeList.get(source));
@@ -160,12 +102,7 @@ public class KruskalAlgorithm
 					wr.write(String.valueOf(spanning_tree[source][destination]));
 					wr.write("\n");
 				}
-				// System.out.print(spanning_tree[source][destination] + "\t");
-
 			}
-
-			// System.out.println();
-
 		}
 		System.out.println(tree.size());
 		wr.close();

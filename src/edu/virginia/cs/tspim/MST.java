@@ -112,8 +112,8 @@ class MST {
 			// Step 2: Pick the smallest edge. And increment
 			// the index for next iteration
 			Edge next_edge = new Edge();
+			
 			next_edge = edge[i++];
-
 			int x = find(subsets, next_edge.src);
 			int y = find(subsets, next_edge.dest);
 
@@ -158,9 +158,19 @@ class MST {
 			
 		}
 		
-		//Util.logln(n.size()); 
-		
-		
+		Util.logln("Nodes Size " + n.size()); 
+		Util.logln("Number of Edges : " + tree.size());
+		Collection<TreeEdges> edgesSet = new HashSet<>();
+		//edgesSet.addAll(tree);
+		for(TreeEdges edge : tree){
+			if(!edgesSet.contains(edge)){
+				edgesSet.add(edge);
+			}
+			else{
+				Util.logln(edge);
+			}
+		}
+		Util.logln("Number of Edges in EdgeSet : " + edgesSet.size());
 		Image im = TourExtractor.extractTourImage(tree);
 		//im.showImage("MST TOUR IMAGE");
 		im.writeImageToDisk("MSTIMG.jpg");

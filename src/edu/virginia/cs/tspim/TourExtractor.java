@@ -52,23 +52,30 @@ public class TourExtractor {
 			}
 		}
 		Util.logln("Root Count:"+ root_count);
+		List<Node> visitedNodes = new ArrayList<Node>();
 		Node previousDrawn = null;
-		Stack<Node> st = new Stack<Node>();
-		st.push(root);
-		while(!st.isEmpty()){
-			Node top = st.pop();
-			if(previousDrawn != null){
-				img.drawLine(previousDrawn, top);
+		for(String key : keys){
+			Node r = nodesMap.get(key);
+			if(visitedNodes.contains(r)){
+				continue;
 			}
-			previousDrawn = top;
-			List<Node> children = top.getChildren();
-			for(Node child : children){
-				st.push(child);
+			Stack<Node> st = new Stack<Node>();
+			st.push(r);
+			while(!st.isEmpty()){
+				Node top = st.pop();
+				visitedNodes.add(top);
+				if(previousDrawn != null){
+					img.drawLine(previousDrawn, top);
+				}
+				previousDrawn = top;
+				List<Node> children = top.getChildren();
+				for(Node child : children){
+					st.push(child);
+				}
 			}
-		}
-		if (previousDrawn != null){
-
-			img.drawLine(previousDrawn, root);
+			if (previousDrawn != null){
+				img.drawLine(previousDrawn, root);
+			}
 		}
 		img.showImage("dlngkdsjngkdasj");
 		return img;
@@ -77,20 +84,9 @@ public class TourExtractor {
 	public static Image extractTourImage(ArrayList<TreeEdges> edgeList) throws IOException{
 		int numEdges = edgeList.size();
 		Writer wr = new FileWriter("Coordinates.csv");
-		//Util.logln(numEdges);
-		Set<TreeEdges> edgeSet= new HashSet<TreeEdges>();
-		edgeSet.addAll(edgeList);
-		//Util.logln(edgeSet.size());
-		
-		int []xCordinates = new int[2*numEdges];
-		int []yCordinates = new int[2*numEdges];
 		int x = 0, y = 0;
 		Image img = new Image(700, 700);
 		for(TreeEdges edge : edgeList){
-			xCordinates[x++] = edge.s.getX();
-			yCordinates[y++] = edge.s.getY();
-			xCordinates[x++] = edge.d.getX();
-			yCordinates[y++] = edge.d.getY();
 			img.drawLine(edge.s, edge.d);
 			wr.write(String.valueOf(edge.s.getX()));
 			wr.write(" ");
@@ -106,8 +102,8 @@ public class TourExtractor {
 		img.showImage("MSTIMG");
 		return getTour(edgeList);
 	}
-	/*public static void main(String[] args) {
-		Node src = new Node(1,2);
+	public static void main(String[] args) {
+		Node src = new Node(100,200);
 		Node dest = new Node(3,4);
 		TreeEdges edge = new TreeEdges();
 		edge.s = src;
@@ -117,10 +113,10 @@ public class TourExtractor {
 		edge1.s = dest;
 		edge1.d = src;
 		
-		Util.logln(edge.toString() == edge1.toString());
+		Util.logln(edge.equals(edge1));
 		Set<TreeEdges> edges = new HashSet<>();
 		edges.add(edge);
 		edges.add(edge1);
 		Util.logln(edges.size());
-	}*/
+	}
 }

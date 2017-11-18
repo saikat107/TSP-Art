@@ -30,7 +30,7 @@ public class Image {
 	}
 	
 	public void setNodeInImage(Node n){
-		nodes[n.getY()][n.getX()] = 0;
+		nodes[n.getX()][n.getY()] = 0;
 	}
 	
 	public void drawLine(Node a, Node b){
@@ -53,8 +53,6 @@ public class Image {
 		double y = a.getY();
 		for(int i = 0; i < steps; i++){
 			Node point = new Node((int)Math.round(x), (int)Math.round(y));
-
-			//Util.logln(point);
 			setNodeInImage(point);
 			x += xImcr;
 			y += yIncr;
