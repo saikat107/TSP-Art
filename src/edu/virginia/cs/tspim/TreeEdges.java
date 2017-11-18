@@ -5,6 +5,15 @@ public class TreeEdges {
 	Node d;
 	double weight;
 	
+	public TreeEdges(){
+		
+	}
+	
+	public TreeEdges(Node s, Node d){
+		this.s = s;
+		this.d = d;
+	}
+	
 	public void set_s(Node x)
 	{
 		s = x;

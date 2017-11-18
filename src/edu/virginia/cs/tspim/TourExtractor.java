@@ -52,6 +52,7 @@ public class TourExtractor {
 			}
 		}
 		Util.logln("Root Count:"+ root_count);
+		List<TreeEdges> tourEdges = new ArrayList<>();
 		List<Node> visitedNodes = new ArrayList<Node>();
 		Node previousDrawn = null;
 		for(String key : keys){
@@ -65,6 +66,8 @@ public class TourExtractor {
 				Node top = st.pop();
 				visitedNodes.add(top);
 				if(previousDrawn != null){
+					TreeEdges nEdge = new TreeEdges(previousDrawn, top);
+					tourEdges.add(nEdge);
 					img.drawLine(previousDrawn, top);
 				}
 				previousDrawn = top;
@@ -73,11 +76,33 @@ public class TourExtractor {
 					st.push(child);
 				}
 			}
-			if (previousDrawn != null){
-				img.drawLine(previousDrawn, root);
+			/*if (previousDrawn != null){
+				TreeEdges nEdge = new TreeEdges(previousDrawn, root);
+				tourEdges.add(nEdge);
+				//img.drawLine(previousDrawn, root);
+			}*/
+		}
+		img.showImage("TOUR IMG");
+		Image img2 = new Image(700, 700);
+		int edgeNumber = tourEdges.size();
+		Util.logln(edgeNumber);
+		for(int k = 0; k < 500; k++){
+			for(int i = 0; i < edgeNumber; i++){
+				TreeEdges edge1 = tourEdges.get(i);
+				for(int j = 0; j < edgeNumber; j++){
+					if (i == j) continue;
+					TreeEdges edge2 = tourEdges.get(j);{
+						Util.swapDestinationPointInEdges(edge1, edge2);
+					}
+				}
 			}
 		}
-		img.showImage("dlngkdsjngkdasj");
+		for(int i = 0; i < edgeNumber; i++){
+			TreeEdges edge1 = tourEdges.get(i);
+			img2.drawLine(edge1.s, edge1.d);
+		}
+		img2.showImage("TOUR IMG Swapped");
+		Util.logln("TourImage Printed");
 		return img;
 	}
 	
@@ -102,7 +127,7 @@ public class TourExtractor {
 		img.showImage("MSTIMG");
 		return getTour(edgeList);
 	}
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		Node src = new Node(100,200);
 		Node dest = new Node(3,4);
 		TreeEdges edge = new TreeEdges();
@@ -118,5 +143,5 @@ public class TourExtractor {
 		edges.add(edge);
 		edges.add(edge1);
 		Util.logln(edges.size());
-	}
+	}*/
 }
