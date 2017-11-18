@@ -26,4 +26,3 @@ public class HelloCV {
             input_sc.close();
         }
 }
-

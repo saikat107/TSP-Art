@@ -1,3 +1,4 @@
+
 package edu.virginia.cs.tspim;
 
 import edu.virginia.cs.tspim.util.Config;
