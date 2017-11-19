@@ -106,7 +106,8 @@ public class KruskalAlgorithm{
 		}
 		System.out.println(tree.size());
 		wr.close();
-		Image im = TourExtractor.extractTourImage(tree);
+		TourExtractor ext = new TourExtractor(700, 700);
+		Image im = ext.extractTourImage(tree, 3);
 		im.showImage("dksjfkh");
 
 	}

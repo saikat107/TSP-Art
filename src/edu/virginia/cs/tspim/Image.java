@@ -17,9 +17,11 @@ public class Image {
 	int [][] nodes;
 	int width;
 	int height;
+	int scale;
 	
-	public Image(int width, int height){
-		nodes = new int[height][width];
+	public Image(int width, int height, int scale){
+		this.scale = scale;
+		nodes = new int[height * scale][width *scale];
 		this.width = width;
 		this.height = height;
 		for(int i = 0; i < height; i++){
@@ -33,11 +35,12 @@ public class Image {
 		nodes[n.getX()][n.getY()] = 0;
 	}
 	
-	public void drawLine(Node a, Node b){
+	public void drawLine(Node a1, Node b1){
 
 //		Util.logln(a);
 //		Util.logln(b);
-
+		Node a = new Node(scale * a1.getX(), scale * a1.getY());
+		Node b = new Node(scale * b1.getX(), scale * b1.getY());
 		int dx = b.getX() - a.getX();
 		int dy = b.getY() - a.getY();
 		int steps = 0;
@@ -94,7 +97,7 @@ public class Image {
 		BufferedImage img = extractImage();
 		JFrame frame = new JFrame(windowTitle);
 		frame.setIconImage(img);
-		frame.setSize(width, height);
+		frame.setSize(scale * width, scale * height);
 		JLabel label = new JLabel();
 		label.setIcon(new ImageIcon(img));
 		label.setPreferredSize(new Dimension(height, width));
