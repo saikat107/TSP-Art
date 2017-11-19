@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 
+import org.opencv.core.Core;
+
+import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
 public class ConnectedComponents {
 	
 	
 	public int countComponents(int n, int[][] edges) {
-		Util.logln(edges.length);
-		Util.logln(edges[0].length);
+		//Util.logln(edges.length);
+		//Util.logln(edges[0].length);
 		
 		if (n <= 0 || edges == null) {
 			return 0;
@@ -71,4 +75,5 @@ public class ConnectedComponents {
 
 		queue.offer(node);
 	}
+	
 }

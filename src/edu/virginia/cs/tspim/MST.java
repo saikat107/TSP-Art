@@ -114,9 +114,8 @@ class MST {
 		i = 0; // Index used to pick next edge
 
 		// Number of edges to be taken is equal to V-1
-		while (e < V - 1) {
+		while (e < V-1) {
 			Edge next_edge = new Edge();
-			
 			next_edge = edge[i++];
 			int x = find(subsets, next_edge.src);
 			int y = find(subsets, next_edge.dest);
@@ -131,7 +130,7 @@ class MST {
 			// Else discard the next_edge
 		}
 		 
-		System.out.println("Length of Result Array: "+result.length);
+		
 		//int []check = new int[nodeList.size()];
 		//TreeEdges ed = new TreeEdges();
 		int [][]edgeList=new int[nodeList.size()][2];
@@ -145,7 +144,8 @@ class MST {
 			edgeList[i][1] = result[i].dest;
 			tree.add(ed);
 			//tree.add(ed1);
-			
+			wr.write(String.valueOf(i));
+			wr.write(",");
 			wr.write(String.valueOf(nodeList.get(result[i].src)));
 			wr.write(",");
 			wr.write(String.valueOf(nodeList.get(result[i].dest)));
