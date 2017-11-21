@@ -3,7 +3,7 @@ package edu.virginia.cs.tspim;
 
 import java.util.*;
 
-
+import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
 import java.lang.*;
@@ -207,8 +207,8 @@ class MST {
 			}
 		}
 		Util.logln("Number of Edges in EdgeSet : " + edgesSet.size());
-		TourExtractor ext = new TourExtractor(700, 700);
-		Image im = ext.extractTourImage(tree, 3);
+		TourExtractor ext = new TourExtractor(Config.getInstance().getImageWidth(), Config.getInstance().getImageHeight(), 4);
+		Image im = ext.extractTourImage(tree);
 		//im.showImage("MST TOUR IMAGE");
 		im.writeImageToDisk("MSTIMG.jpg");
 	}

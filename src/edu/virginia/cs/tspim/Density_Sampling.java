@@ -9,7 +9,7 @@ public class Density_Sampling {
 	int [][]presampled_array;
 	float threshold;
 	
-	Density_Sampling(int[][]mat, float avg)
+	public Density_Sampling(int[][]mat, float avg)
 	{
 		threshold = avg;
 	    presampled_array = new int [mat.length][mat[0].length];
@@ -19,7 +19,7 @@ public class Density_Sampling {
 		
 	}
 	
-	void gen_Sample()
+	public void gen_Sample()
 	{
 		
 		//System.out.println(presampled_array.length + " "+presampled_array[0].length);
@@ -55,7 +55,7 @@ public class Density_Sampling {
 	//		System.out.println();
 		}
 		
-		Util.writeImage(sampled_array, "Shortened/" + Config.fileName); 
+//		Util.writeImage(sampled_array, "Shortened/" + Config.getInstance().getFileName()); 
 		//System.out.println(sampled_array.length + " "+sampled_array[0].length);
 		//System.out.println(presampled_array.length + " "+presampled_array[0].length);
 		

@@ -23,17 +23,18 @@ import edu.virginia.cs.tspim.util.Util;
 public class TourExtractor {
 	//static int []x = new int[]{350,	200, 200, 300, 300, 50,  50,  10,  50,  60,  60,  50,  300, 350, 350, 400, 350, 200, 200, 100, 100, 100, 200, 150, 200, 200, 350, 400, 400, 500, 500, 250, 350, 400, 400, 600, 600, 550, 550, 300, 600, 650, 650, 595, 595, 400, 595, 600, 600, 698};																																						
 	//static int []y = new int[]{70, 	80,  80,  140, 140, 210, 210, 210, 210, 240, 240, 280, 140, 210, 210, 210, 210, 280, 280, 280, 280, 350, 280, 350, 280, 350, 210, 280, 280, 280, 280, 350, 70,  180, 180, 292, 292, 468, 468, 648, 292, 492, 492, 468, 468, 648, 468, 692, 292, 548};
-	private int width, height;
+	private int width, height, scale;
 	
-	public TourExtractor(int width, int height){
+	public TourExtractor(int width, int height, int scale){
 		this.width = width;
 		this.height = height;
+		this.scale = scale;
 	}
 	
 	public  Image getTour(ArrayList<TreeEdges> edges, int scale){
 		//Util.logln(edges.size());
 		Map<String, Node> nodesMap = new HashMap<String, Node>();
-		Image img = new Image(this.width, this.height, scale);
+		Image tourImg = new Image(this.width, this.height, scale, "TOUR_IMAGE");
 		
 		for(TreeEdges edge : edges){
 			Node a = edge.getNode_s();
@@ -77,7 +78,7 @@ public class TourExtractor {
 				if(previousDrawn != null){
 					TreeEdges nEdge = new TreeEdges(previousDrawn, top);
 					tourEdges.add(nEdge);
-					img.drawLine(previousDrawn, top);
+					tourImg.drawLine(previousDrawn, top);
 				}
 				previousDrawn = top;
 				List<Node> children = top.getChildren();
@@ -88,14 +89,15 @@ public class TourExtractor {
 			if (previousDrawn != null){
 				TreeEdges nEdge = new TreeEdges(previousDrawn, root);
 				tourEdges.add(nEdge);
-				img.drawLine(previousDrawn, root);
+				tourImg.drawLine(previousDrawn, root);
 			}
 		}
-		img.showImage("TOUR IMG");
-		Image img2 = new Image(this.width, this.height, scale);
+		tourImg.showImage();
+		
+		Image swpImg = new Image(this.width, this.height, scale, "SWAPPED_IMAGE");
 		int edgeNumber = tourEdges.size();
 		Util.logln(edgeNumber);
-		for(int k = 0; k < 2000; k++){
+		for(int k = 0; k < 1; k++){
 			for(int i = 0; i < edgeNumber; i++){
 				TreeEdges edge1 = tourEdges.get(i);
 				for(int j = 0; j < edgeNumber; j++){
@@ -108,20 +110,21 @@ public class TourExtractor {
 		}
 		for(int i = 0; i < edgeNumber; i++){
 			TreeEdges edge1 = tourEdges.get(i);
-			img2.drawLine(edge1.s, edge1.d);
+			swpImg.drawLine(edge1.s, edge1.d);
 		}
-		img2.showImage("TOUR IMG Swapped");
+		swpImg.showImage();
+	
 		Util.logln("TourImage Printed");
-		return img;
+		return tourImg;
 	}
 	
-	public Image extractTourImage(ArrayList<TreeEdges> edgeList, int scale) throws IOException{
+	public Image extractTourImage(ArrayList<TreeEdges> edgeList) throws IOException{
 		int numEdges = edgeList.size();
 		Writer wr = new FileWriter("Coordinates.csv");
 		int x = 0, y = 0;
-		Image img = new Image(this.width, this.height, scale);
+		Image mstImg = new Image(this.width, this.height, scale, "MST_IMG");
 		for(TreeEdges edge : edgeList){
-			img.drawLine(edge.s, edge.d);
+			mstImg.drawLine(edge.s, edge.d);
 			wr.write(String.valueOf(edge.s.getX()));
 			wr.write(" ");
 			wr.write(String.valueOf(edge.s.getY()));
@@ -133,7 +136,7 @@ public class TourExtractor {
 			
 		}
 		wr.close();
-		img.showImage("MSTIMG");
+		mstImg.showImage();
 		return getTour(edgeList, scale);
 	}
 	/*public static void main(String[] args) {

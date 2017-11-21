@@ -19,7 +19,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
-class GrayScale_Conversion {
+public class GrayScale_Conversion {
 
 	String image_file;
 	int sum;
@@ -28,7 +28,7 @@ class GrayScale_Conversion {
 	ArrayList<Node> nodeList = new ArrayList<Node>();
 	double[][] adjacency_matrix;
 
-	GrayScale_Conversion(String img_file) {
+	public GrayScale_Conversion(String img_file) {
 		image_file = img_file;
 		sum = 0;
 		average_threshold = 0;
@@ -45,6 +45,8 @@ class GrayScale_Conversion {
 			BufferedImage image = ImageIO.read(input);
 
 			byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+			Config.getInstance().setImageHeight(image.getHeight());
+			Config.getInstance().setImageWidth(image.getWidth());
 			Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
 			mat.put(0, 0, data);
 
@@ -80,24 +82,24 @@ class GrayScale_Conversion {
 					nodesImg[i][j] = 255;
 				}
 			}
-
-			for (int i = 0; i < numRows; i += Config.BLOCK_SIZE) {
-				for (int j = 0; j < numCols; j += Config.BLOCK_SIZE) {
+			int blockSize = Config.getInstance().getBlockSize();
+			for (int i = 0; i < numRows; i += blockSize) {
+				for (int j = 0; j < numCols; j += blockSize) {
 					double blockAvg = 0;
-					for (int x = 0; x < Config.BLOCK_SIZE; x++) {
-						for (int y = 0; y < Config.BLOCK_SIZE; y++) {
+					for (int x = 0; x < blockSize; x++) {
+						for (int y = 0; y < blockSize; y++) {
 							if (i + x < numRows && j + y < numCols)
 								blockAvg += sample_pre_array[i + x][j + y];
 						}
 					}
-					blockAvg /= (Config.BLOCK_SIZE * Config.BLOCK_SIZE);
-					if (blockAvg < Config.ALPHA * average_threshold) {
-						int xLimit = Config.BLOCK_SIZE;
-						int yLimit = Config.BLOCK_SIZE;
+					blockAvg /= (blockSize * blockSize);
+					if (blockAvg < Config.getInstance().getAlpha() * average_threshold) {
+						int xLimit = blockSize;
+						int yLimit = blockSize;
 						Node n = new Node();
 						if (i + xLimit < numRows && j + yLimit < numCols) {
-							int x = i + Util.genarateRandom(0, Config.BLOCK_SIZE - 1);
-							int y = j + Util.genarateRandom(0, Config.BLOCK_SIZE - 1);
+							int x = i + Util.genarateRandom(0, blockSize - 1);
+							int y = j + Util.genarateRandom(0, blockSize - 1);
 							nodesImg[x][y] = 0;
 							n.setX(x);
 							n.setY(y);
@@ -114,7 +116,7 @@ class GrayScale_Conversion {
 				}
 			}
 
-			Util.writeImage(nodesImg, "NodesImg/" + Config.fileName);
+			//Util.writeImage(nodesImg, "NodesImg/" + Config.fileName);
 			Util.logln(nodeList.size());
 			Writer w = new FileWriter("Node.csv");
 			
@@ -195,8 +197,8 @@ class GrayScale_Conversion {
 			Density_Sampling s = new Density_Sampling(sample_pre_array, average_threshold);
 			s.gen_Sample();
 
-			File ouptut = new File("grayImg/" + Config.fileName);
-			ImageIO.write(image1, "jpg", ouptut);
+			File ouptut = new File("grayImg/" + Config.getInstance().getFileName());
+//			ImageIO.write(image1, "jpg", ouptut);
 		} catch (Exception e) {
 			// System.out.println("Error: " + e.getMessage());
 			e.printStackTrace();
