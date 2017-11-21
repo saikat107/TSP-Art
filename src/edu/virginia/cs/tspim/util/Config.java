@@ -7,7 +7,17 @@ public class Config {
 	private String fileName;
 	public static final double MAX_VALUE = 999.0;
 	private static Config instance = null;
+	private int scale;
 	
+	public int getScale() {
+		return scale;
+	}
+
+
+	public void setScale(int scale) {
+		this.scale = scale;
+	}
+
 	private int imageHeight;
 	public int getImageHeight() {
 		return imageHeight;

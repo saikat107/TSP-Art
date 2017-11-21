@@ -207,9 +207,8 @@ class MST {
 			}
 		}
 		Util.logln("Number of Edges in EdgeSet : " + edgesSet.size());
-		TourExtractor ext = new TourExtractor(Config.getInstance().getImageWidth(), Config.getInstance().getImageHeight(), 4);
+		TourExtractor ext = new TourExtractor(Config.getInstance().getImageWidth(), Config.getInstance().getImageHeight(), Config.getInstance().getScale());
 		Image im = ext.extractTourImage(tree);
-		//im.showImage("MST TOUR IMAGE");
 		im.writeImageToDisk("MSTIMG.jpg");
 	}
 }

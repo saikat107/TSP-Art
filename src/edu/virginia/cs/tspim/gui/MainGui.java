@@ -11,8 +11,8 @@ import javax.swing.JLabel;
 
 import org.opencv.core.Core;
 
-import edu.virginia.cs.tspim.Density_Sampling;
-import edu.virginia.cs.tspim.GrayScale_Conversion;
+import edu.virginia.cs.tspim.DensitySampler;
+import edu.virginia.cs.tspim.GrayScaleConverter;
 import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
@@ -50,15 +50,17 @@ public class MainGui extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        openButton = new javax.swing.JButton();
+    	openButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         filePathTextBox = new javax.swing.JTextPane();
         runAlgorithmButton = new javax.swing.JButton();
         alphaChooser = new javax.swing.JSlider();
-        jLabel1 = new javax.swing.JLabel();
+        alphaDefaultLabel1 = new javax.swing.JLabel();
         blockSizeChooser = new javax.swing.JSpinner();
-        jLabel2 = new javax.swing.JLabel();
+        blockSizeDefaultLabel = new javax.swing.JLabel();
         alphaValurLbl = new javax.swing.JLabel();
+        scaleSlider = new javax.swing.JSlider();
+        scaleDefaultLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,7 +84,6 @@ public class MainGui extends javax.swing.JFrame {
         });
 
         alphaChooser.setMinorTickSpacing(10);
-        alphaChooser.setPaintLabels(true);
         alphaChooser.setPaintTicks(true);
         alphaChooser.setValue(75);
         alphaChooser.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -91,14 +92,29 @@ public class MainGui extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel1.setText("Alpha");
+        alphaDefaultLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        alphaDefaultLabel1.setText("Alpha");
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel2.setText("Block Size");
+        blockSizeChooser.setRequestFocusEnabled(false);
+        blockSizeChooser.setValue(1);
+        blockSizeChooser.setVerifyInputWhenFocusTarget(false);
+
+        blockSizeDefaultLabel.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        blockSizeDefaultLabel.setText("Block Size");
 
         alphaValurLbl.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         alphaValurLbl.setText("0.75");
+
+        scaleSlider.setMajorTickSpacing(1);
+        scaleSlider.setMaximum(10);
+        scaleSlider.setMinimum(1);
+        scaleSlider.setMinorTickSpacing(1);
+        scaleSlider.setPaintLabels(true);
+        scaleSlider.setPaintTicks(true);
+        scaleSlider.setValue(2);
+
+        scaleDefaultLabel.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        scaleDefaultLabel.setText("Scale");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -106,18 +122,20 @@ public class MainGui extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(runAlgorithmButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(alphaChooser, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(blockSizeChooser))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(scaleSlider, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 453, Short.MAX_VALUE)
+                    .addComponent(alphaChooser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addComponent(blockSizeChooser, javax.swing.GroupLayout.Alignment.LEADING))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(blockSizeDefaultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(alphaValurLbl, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(openButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(alphaDefaultLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(openButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(scaleDefaultLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,14 +145,18 @@ public class MainGui extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addComponent(openButton, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(alphaValurLbl, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(alphaChooser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(alphaDefaultLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(alphaChooser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(alphaValurLbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(scaleSlider, javax.swing.GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+                    .addComponent(scaleDefaultLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(blockSizeChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(blockSizeDefaultLabel))
                 .addGap(18, 18, 18)
                 .addComponent(runAlgorithmButton, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -151,7 +173,7 @@ public class MainGui extends javax.swing.JFrame {
     private void runAlgorithmButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                   
         int d = alphaChooser.getValue();
         double alpha = d / 100.00;
-        System.out.println(blockSizeChooser.getValue().getClass());
+        int scale = scaleSlider.getValue();
         int blockSize = (int)blockSizeChooser.getValue();
         if(filePath.endsWith(".jpg") || filePath.endsWith(".JPG") || 
                 filePath.endsWith(".png") || filePath.endsWith(".PNG") ||
@@ -161,6 +183,7 @@ public class MainGui extends javax.swing.JFrame {
         	Config.getInstance().setAlpha(alpha);
         	Config.getInstance().setFileName(filePath);
         	Config.getInstance().setBlockSize(blockSize);
+        	Config.getInstance().setScale(scale);
         	
         	Util.logln(Config.getInstance());
         	//this.setVisible(false);
@@ -169,10 +192,10 @@ public class MainGui extends javax.swing.JFrame {
 				public void run() {
 					System.loadLibrary( Core.NATIVE_LIBRARY_NAME);
 		        	String file_name = Config.getInstance().getFileName();//input_sc.nextLine();
-		            GrayScale_Conversion con = new GrayScale_Conversion(file_name);
-		            con.convert_to_Gray();
-		            Density_Sampling s = new Density_Sampling(con.get_array(),con.get_threshold());
-		            s.gen_Sample();
+		            GrayScaleConverter con = new GrayScaleConverter(file_name);
+		            con.convertToGray();
+		            DensitySampler s = new DensitySampler(con.get_array(),con.getThreshold());
+		            s.genSample();
 				}
 			});
         	t.start();
@@ -242,15 +265,17 @@ public class MainGui extends javax.swing.JFrame {
 //        });
     }
 
-    // Variables declaration - do not modify                     
+ // Variables declaration - do not modify                     
     private javax.swing.JSlider alphaChooser;
     private javax.swing.JLabel alphaValurLbl;
     private javax.swing.JSpinner blockSizeChooser;
     private javax.swing.JTextPane filePathTextBox;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel alphaDefaultLabel1;
+    private javax.swing.JLabel blockSizeDefaultLabel;
+    private javax.swing.JLabel scaleDefaultLabel;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSlider scaleSlider;
     private javax.swing.JButton openButton;
     private javax.swing.JButton runAlgorithmButton;
-    // End of variables declaration                   
+    // End of variables declaration                     
 }

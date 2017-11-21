@@ -19,29 +19,28 @@ import org.opencv.imgproc.Imgproc;
 import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
-public class GrayScale_Conversion {
+public class GrayScaleConverter {
 
-	String image_file;
+	String imageFile;
 	int sum;
-	float average_threshold;
-	int[][] sample_pre_array;
+	float averageThreshold;
+	int[][] samplePreArray;
 	ArrayList<Node> nodeList = new ArrayList<Node>();
-	double[][] adjacency_matrix;
+	double[][] adjacencyMatrix;
 
-	public GrayScale_Conversion(String img_file) {
-		image_file = img_file;
+	public GrayScaleConverter(String img_file) {
+		imageFile = img_file;
 		sum = 0;
-		average_threshold = 0;
+		averageThreshold = 0;
 	}
 
-	public float get_threshold() {
-		return average_threshold;
+	public float getThreshold() {
+		return averageThreshold;
 	}
 
-	public void convert_to_Gray() {
+	public void convertToGray() {
 		try {
-
-			File input = new File(image_file);
+			File input = new File(imageFile);
 			BufferedImage image = ImageIO.read(input);
 
 			byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
@@ -59,20 +58,20 @@ public class GrayScale_Conversion {
 
 			BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
 			image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
-			sample_pre_array = new int[mat1.rows()][mat1.cols()];
+			samplePreArray = new int[mat1.rows()][mat1.cols()];
 			// Util.logln(mat1.get(0, 0).length);
 			for (int i = 0; i < mat1.rows(); i++) {
 				for (int j = 0; j < mat1.cols(); j++) {
-					sample_pre_array[i][j] = (int) mat1.get(i, j)[0];
+					samplePreArray[i][j] = (int) mat1.get(i, j)[0];
 				}
 			}
 			for (int i = 0; i < mat1.rows(); i++) {
 				for (int j = 0; j < mat1.cols(); j++) {
-					sum += sample_pre_array[i][j];
+					sum += samplePreArray[i][j];
 				}
 			}
 
-			average_threshold = sum / (mat1.rows() * mat1.cols());
+			averageThreshold = sum / (mat1.rows() * mat1.cols());
 			// Util.logln(average_threshold);
 			int numRows = mat1.rows();
 			int numCols = mat1.cols();
@@ -89,11 +88,11 @@ public class GrayScale_Conversion {
 					for (int x = 0; x < blockSize; x++) {
 						for (int y = 0; y < blockSize; y++) {
 							if (i + x < numRows && j + y < numCols)
-								blockAvg += sample_pre_array[i + x][j + y];
+								blockAvg += samplePreArray[i + x][j + y];
 						}
 					}
 					blockAvg /= (blockSize * blockSize);
-					if (blockAvg < Config.getInstance().getAlpha() * average_threshold) {
+					if (blockAvg < Config.getInstance().getAlpha() * averageThreshold) {
 						int xLimit = blockSize;
 						int yLimit = blockSize;
 						Node n = new Node();
@@ -115,90 +114,36 @@ public class GrayScale_Conversion {
 					}
 				}
 			}
-
-			//Util.writeImage(nodesImg, "NodesImg/" + Config.fileName);
 			Util.logln(nodeList.size());
-			Writer w = new FileWriter("Node.csv");
-			
-			for(int i=0;i<nodeList.size();i++)
-			{
-				Node n = nodeList.get(i);
-				w.write(String.valueOf(n.x)+ " "+String.valueOf(n.y));
-				w.write("\n");
-			}
-			
-			w.close();
-			
-			//ArrayList<Node>ulist=new ArrayList<Node>();
-			
-			nodeList = (ArrayList<Node>) nodeList.stream().distinct().collect(Collectors.toList());
-			
+			nodeList = (ArrayList<Node>) nodeList.stream().distinct().collect(Collectors.toList());	
 			Util.logln(nodeList.size());
-			// adjacency_matrix = new double[nodeList.size()][nodeList.size()];
-			/*
-			 * for (int i =0; i<nodeList.size();i++) { Node v1 =
-			 * nodeList.get(i); for(int j=0;j<nodeList.size();j++) { Node v2 =
-			 * nodeList.get(j); double distance =
-			 * Math.sqrt((v1.getX()-v2.getX())*(v1.getX()-v2.getX())+(v1.getY()-
-			 * v2.getY())*(v1.getY()-v2.getY())); adjacency_matrix[i][j] =
-			 * distance;
-			 * 
-			 * if(i==j) { adjacency_matrix[i][j] = 0.0; continue; }
-			 * 
-			 * if (adjacency_matrix[i][j] == 0.0)
-			 * 
-			 * {
-			 * 
-			 * adjacency_matrix[i][j] = Config.MAX_VALUE;
-			 * 
-			 * }
-			 * 
-			 * 
-			 * } } /* for(int i =0;i<nodeList.size();i++) { for(int
-			 * j=0;j<nodeList.size();j++)
-			 * System.out.print(adjacency_matrix[i][j]+ "\t");
-			 * System.out.println();
-			 * 
-			 * }
-			 */
-			/*
-			 * KruskalAlgorithm al = new KruskalAlgorithm(nodeList.size());
-			 * //al.kruskalAlgorithm(adjacency_matrix,nodeList);
-			 */
 			MST gr = new MST(nodeList.size(), ((nodeList.size() * (nodeList.size() - 1)) / 2), nodeList);
 			int l = 0;
-			Writer w1 = new FileWriter("Test.csv");
-
+			//Writer w1 = new FileWriter("Test.csv");
 			for (int i = 0; i < nodeList.size() - 1; i++) {
 				Node v1 = nodeList.get(i);
 				for (int j = i + 1; j < nodeList.size(); j++) {
 					Node v2 = nodeList.get(j);
 					double distance = Math.sqrt(((v1.getX()-v2.getX())*(v1.getX()-v2.getX()))+((v1.getY()-v2.getY())*(v1.getY()-v2.getY())));
-					if(i!=j)
-					{
+					if(i!=j){
 						gr.edge[l].src = i;
 						gr.edge[l].dest = j;
 						gr.edge[l].weight = distance;
-						w1.write(String.valueOf(gr.edge[l].src));
-						w1.write(",");
-						w1.write(String.valueOf(gr.edge[l].dest));
-						w1.write(",");
-						w1.write(String.valueOf(gr.edge[l].weight));
-						w1.write("\n");
+//						w1.write(String.valueOf(gr.edge[l].src));
+//						w1.write(",");
+//						w1.write(String.valueOf(gr.edge[l].dest));
+//						w1.write(",");
+//						w1.write(String.valueOf(gr.edge[l].weight));
+//						w1.write("\n");
 						l++;
 					}
-
 				}
 			}
 			Util.logln(l);
-			w1.close();
+//			w1.close();
 			gr.KruskalMST();
-
-			Density_Sampling s = new Density_Sampling(sample_pre_array, average_threshold);
-			s.gen_Sample();
-
-			File ouptut = new File("grayImg/" + Config.getInstance().getFileName());
-//			ImageIO.write(image1, "jpg", ouptut);
+			DensitySampler s = new DensitySampler(samplePreArray, averageThreshold);
+			s.genSample();
 		} catch (Exception e) {
 			// System.out.println("Error: " + e.getMessage());
 			e.printStackTrace();
@@ -207,6 +152,6 @@ public class GrayScale_Conversion {
 
 	public int[][] get_array() {
 
-		return sample_pre_array;
+		return samplePreArray;
 	}
 }
