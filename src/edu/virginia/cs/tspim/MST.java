@@ -9,12 +9,36 @@ import edu.virginia.cs.tspim.util.Util;
 import java.lang.*;
 import java.io.*;
 
-class MST {
+public class MST {
 	
 
 	// A class to represent a graph edge
-	class Edge implements Comparable<Edge> {
+	public static class Edge implements Comparable<Edge> {
 		int src, dest;
+		public int getSrc() {
+			return src;
+		}
+
+		public void setSrc(int src) {
+			this.src = src;
+		}
+
+		public int getDest() {
+			return dest;
+		}
+
+		public void setDest(int dest) {
+			this.dest = dest;
+		}
+
+		public double getWeight() {
+			return weight;
+		}
+
+		public void setWeight(double weight) {
+			this.weight = weight;
+		}
+
 		double weight;
 		
 		// Comparator function used for sorting edges
@@ -29,6 +53,7 @@ class MST {
 			return 0;
 
 		}
+		
 	};
 
 	// A class to represent a subset for union-find
@@ -37,25 +62,30 @@ class MST {
 	};
 
 	int V, E; // V-> no. of vertices & E->no.of edges
-	Edge edge[]; // collection of all edges
+	public Edge edge[]; // collection of all edges
 	ArrayList<Node> nodeList; 
 	ArrayList<TreeEdges> tree = new ArrayList<TreeEdges>();
 	int [][]edgeList;
 	int check_all_nodes[];
 	
 	// Creates a graph with V vertices and E edges
-	MST(int v, int e,ArrayList<Node> nodeList) {
+	public MST(int v, int e, List<Node> nodeList) {
 		V = v;
 		E = e;
 		Util.logln(V);
 		Util.logln(E);
-		this.nodeList=nodeList;
+		this.nodeList= (ArrayList<Node>) nodeList;
 		check_all_nodes= new int[nodeList.size()];
 		edge = new Edge[E];
 		for (int i = 0; i < e; ++i)
 			edge[i] = new Edge();
 	}
 
+	
+	public Edge getEdge(int i){
+		return this.edge[i];
+	}
+	
 	// A utility function to find set of an element i
 	// (uses path compression technique)
 	int find(subset subsets[], int i) {
@@ -88,10 +118,8 @@ class MST {
 	}
 
 	// The main function to construct MST using Kruskal's algorithm
-	void KruskalMST() throws IOException {
+	public ArrayList<TreeEdges> KruskalMST() throws IOException {
 		//Util.logln("Inside Kruskal MST");
-		Writer wr = new FileWriter("output_new.csv");
-		Writer wr1 = new FileWriter("check.csv");
 		Edge result[] = new Edge[V]; // Tnis will store the resultant MST
 		int e = 0; // An index variable, used for result[]
 		int i = 0; // An index variable, used for sorted edges
@@ -129,10 +157,6 @@ class MST {
 			}
 			// Else discard the next_edge
 		}
-		 
-		
-		//int []check = new int[nodeList.size()];
-		//TreeEdges ed = new TreeEdges();
 		int [][]edgeList=new int[nodeList.size()][2];
 		for (i = 0; i < e; ++i){
 			
@@ -143,49 +167,15 @@ class MST {
 			edgeList[i][0] = result[i].src;
 			edgeList[i][1] = result[i].dest;
 			tree.add(ed);
-			//tree.add(ed1);
-			wr.write(String.valueOf(i));
-			wr.write(",");
-			wr.write(String.valueOf(nodeList.get(result[i].src)));
-			wr.write(",");
-			wr.write(String.valueOf(nodeList.get(result[i].dest)));
-			wr.write(",");	
-			wr.write(String.valueOf(result[i].weight));
-			wr.write(",");
-			wr.write(String.valueOf(result[i].src));
-			wr.write(",");
-			wr.write(String.valueOf(result[i].dest));
-			//wr.write(",");
-			wr.write("\n");
 			//System.out.println(result[i].src + " -- " + result[i].dest + " == " + result[i].weight);
-		}
-		
-		wr.close();
-		
+		}		
 		for(i=0;i<result.length;i++)
 		{
 			++check_all_nodes[result[i].src];
 			++check_all_nodes[result[i].dest];
 		}
 		
-		for(i=0;i<check_all_nodes.length;i++)
-		{
-			wr1.write(String.valueOf(check_all_nodes[i]));
-			//wr.write(String.valueOf(result[i].weight));
-			wr1.write(",");
-			wr1.write(String.valueOf(nodeList.get(result[i].src)));
-			wr1.write(",");
-			wr1.write(String.valueOf(nodeList.get(result[i].dest)));
-			wr1.write("\n");
-		}
-		
-		wr1.close();
-		
-		
-		
 		ConnectedComponents ob = new ConnectedComponents();
-		System.out.println("Number of Connected Components: "+ob.countComponents(nodeList.size(), edgeList));
-		//System.out.println(tree.size());
 		Set<Node> n = new HashSet<Node>();
 		for(TreeEdges ef: tree)
 		{
@@ -207,8 +197,6 @@ class MST {
 			}
 		}
 		Util.logln("Number of Edges in EdgeSet : " + edgesSet.size());
-		TourExtractor ext = new TourExtractor(Config.getInstance().getImageWidth(), Config.getInstance().getImageHeight(), Config.getInstance().getScale());
-		Image im = ext.extractTourImage(tree);
-		im.writeImageToDisk("MSTIMG.jpg");
+		return tree;
 	}
 }

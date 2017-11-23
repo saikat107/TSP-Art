@@ -4,7 +4,9 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,7 +15,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import edu.virginia.cs.tspim.MST;
 import edu.virginia.cs.tspim.Node;
+import edu.virginia.cs.tspim.TourExtractor;
 import edu.virginia.cs.tspim.TreeEdges;
 
 public class Util {
@@ -185,5 +189,26 @@ public class Util {
 	public static void main(String args[]){
 		for(int i = 0; i < 10; i++)
 			Util.logln(genarateRandom(0, 5));
+	}
+	
+	public static List<TreeEdges> generateMST(List<Node> nodeList) throws IOException {
+		MST gr = new MST(nodeList.size(), ((nodeList.size() * (nodeList.size() - 1)) / 2), nodeList);
+		int l = 0;
+		for (int i = 0; i < nodeList.size() - 1; i++) {
+			Node v1 = nodeList.get(i);
+			for (int j = i + 1; j < nodeList.size(); j++) {
+				Node v2 = nodeList.get(j);
+				double distance = Math.sqrt(((v1.getX()-v2.getX())*(v1.getX()-v2.getX()))+((v1.getY()-v2.getY())*(v1.getY()-v2.getY())));
+				if(i!=j){
+					gr.getEdge(l).setSrc(i);
+					gr.getEdge(l).setDest(j);
+					gr.getEdge(l).setWeight(distance);
+					l++;
+				}
+			}
+		}
+		Util.logln(l);
+		List<TreeEdges> tree = gr.KruskalMST();
+		return tree;
 	}
 }
