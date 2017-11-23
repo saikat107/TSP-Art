@@ -1,6 +1,7 @@
 package edu.virginia.cs.tspim.gui;
 
 import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -54,8 +55,7 @@ public class MainGui extends javax.swing.JFrame {
 
     
     private void swappedImgCheckBoxItemStateChanged(java.awt.event.ItemEvent evt) {                                                    
-        // TODO add your handling code here:
-	    if(evt.getStateChange() == ItemEvent.DESELECTED){
+    	if(evt.getStateChange() == ItemEvent.DESELECTED){
 	        iterationNumbeField.setEnabled(false);
 	    }
 	    else{
@@ -182,6 +182,12 @@ public class MainGui extends javax.swing.JFrame {
         tourImgCheckBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         tourImgCheckBox.setText("TSP Tour Image");
         tourImgCheckBox.setSelected(true);
+        tourImgCheckBox.addItemListener(new ItemListener() {			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				tourImgCheckBoxItemStateChanged(e);
+			}
+		});
 
         swappedImgCheckBox.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         swappedImgCheckBox.setText("TSP Swapped Image");
@@ -274,7 +280,18 @@ public class MainGui extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>    
-    private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
+    protected void tourImgCheckBoxItemStateChanged(ItemEvent e) {
+    	if(e.getStateChange() == ItemEvent.DESELECTED){
+    		swappedImgCheckBox.setEnabled(false);
+	        iterationNumbeField.setEnabled(false);
+	    }
+	    else{
+	    	swappedImgCheckBox.setEnabled(true);
+	        iterationNumbeField.setEnabled(true);
+	    }	
+	}
+
+	private void openButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
         fp = new FileOpener(this);
         fp.setVisible(true);
     }                                          
