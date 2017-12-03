@@ -71,5 +71,11 @@ public class TreeEdges {
 		}
 		return false;
 	}
+	
+	public void reverseThisEdge(){
+		Node temp = this.s;
+		this.s = this.d;
+		this.d = temp;
+	}
 
 }

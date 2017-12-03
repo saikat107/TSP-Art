@@ -332,6 +332,8 @@ public class MainGui extends javax.swing.JFrame {
 						TourExtractor extractor = new TourExtractor(Config.getInstance().getImageWidth(), 
 								Config.getInstance().getImageHeight(), Config.getInstance().getScale());
 						extractor.extractTourImage(tree, mstImgShow, tourImgShow, swapImagShow, numIter);
+						Image nodes = mstGen.getNodeImage();
+						//nodes.showImage();
 						if(mstImgShow){
 							Image mst = extractor.getMSTImage();
 							mst.showImage();

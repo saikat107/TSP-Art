@@ -17,10 +17,13 @@ public class NodeSampler {
 	private int[][] samplePreArray;
 	private ArrayList<Node> nodeList;
 	private double[][] adjacencyMatrix;
+	private Image nodeImage;
 
 	public NodeSampler(String imageFile) {
+		Config config = Config.getInstance();
 		this.imageFile = imageFile;
 		this.nodeList = new ArrayList<>();
+		nodeImage = new Image(config.getImageWidth(), config.getImageHeight(), config.getScale(), "Nodes Image");
 	}
 
 	public List<Node> generateNodeSampleList(Mat mat) throws IOException {
@@ -82,7 +85,14 @@ public class NodeSampler {
 		}
 		//Util.logln(nodeList.size());
 		nodeList = (ArrayList<Node>) nodeList.stream().distinct().collect(Collectors.toList());	
+		for(Node n: nodeList){
+			nodeImage.setScaledNodeInImage(n);
+		}
+		//nodeImage.showImage();
 		return nodeList;
 	}
 
+	public Image getNodeImage(){
+		return this.nodeImage;
+	}
 }

@@ -82,20 +82,35 @@ public class TourExtractor {
 			TreeEdges nEdge = new TreeEdges(previousDrawn, root);
 			tourEdges.add(nEdge);
 			tourImg.drawLine(previousDrawn, root);
-		}
-		
+		}		
 		//tourImg.showImage();
 		if(swap){
 			int edgeNumber = tourEdges.size();
 			Util.logln(edgeNumber);
 			for(int k = 0; k < iter; k++){
+				//Util.logln("Iteration Number : " + k);
 				for(int i = 0; i < edgeNumber; i++){
 					TreeEdges edge1 = tourEdges.get(i);
-					for(int j = 0; j < edgeNumber; j++){
-						if (i == j) continue;
-						TreeEdges edge2 = tourEdges.get(j);{
+					for(int j = i+1; j < edgeNumber; j++){
+						TreeEdges edge2 = tourEdges.get(j);
+						//Util.logln(edge1);
+						if(Util.isLineCrossing(edge1, edge2)){
 							Util.swapDestinationPointInEdges(edge1, edge2);
-						}
+							Util.logln(edge1.toString() + " ==> " + edge2 + " -- -- -- " + k);
+							int minIdx = i + 1;
+							int maxIdx = j - 1;
+							while(maxIdx > minIdx){
+								TreeEdges one = tourEdges.get(minIdx).reverseEdge();
+								TreeEdges two = tourEdges.get(maxIdx).reverseEdge();
+								tourEdges.set(minIdx, two);
+								tourEdges.set(maxIdx, one);
+								minIdx++;
+								maxIdx--;
+							}
+							if(minIdx == maxIdx){
+								tourEdges.set(minIdx, tourEdges.get(minIdx).reverseEdge());
+							}
+						}	
 					}
 				}
 			}

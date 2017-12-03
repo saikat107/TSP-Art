@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import edu.virginia.cs.tspim.Image;
 import edu.virginia.cs.tspim.MST;
 import edu.virginia.cs.tspim.Node;
 import edu.virginia.cs.tspim.TourExtractor;
@@ -170,25 +171,83 @@ public class Util {
 			double x = (b1 * c2 - b2 * c1) / det;
 			double y = (c1 * a2 - c2 * a1) / det;
 			//Util.logln(x + " " + y);
-			boolean insideLine1 = x > min(x1, x2) && x < max(x1, x2) && y > min(y1, y2) && y < max(y1, y2);
-			boolean insideLine2 = x > min(x3, x4) && x < max(x3, x4) && y > min(y3, y4) && y < max(y3, y4);
+			
+			boolean insideLine1 = (((x1 == x2) && (x == x1)) || ((x > min(x1, x2) && x < max(x1, x2)))) 
+					&& (((y1 == y2) && (y == y1)) || ((y > min(y1, y2) && y < max(y1, y2))));
+			boolean insideLine2 = (((x3 == x4) && (x == x3)) || ((x > min(x3, x4) && x < max(x3, x4)))) 
+					&& (((y3 == y4) && (y == y3)) || ((y > min(y3, y4) && y < max(y3, y4))));
 			return insideLine1 && insideLine2;
 		}
 	}
 	
 	
-	public static void swapDestinationPointInEdges(TreeEdges edge1, TreeEdges edge2){
-		if(isLineCrossing(edge1, edge2)){
+	public static boolean swapDestinationPointInEdges(TreeEdges edge1, TreeEdges edge2){
+		boolean lineCrossing = isLineCrossing(edge1, edge2);
+		if(lineCrossing){
+			Node s1 = edge1.getNode_s();
+			Node s2 = edge2.getNode_s();
 			Node d1 = edge1.getNode_d();
 			Node d2 = edge2.getNode_d();
-			edge1.set_d(d2);
-			edge2.set_d(d1);
+			edge1.set_s(s1);
+			edge1.set_d(s2);
+			edge2.set_s(d1);
+			edge2.set_d(d2);
 		}
+		return lineCrossing;
+	}
+	
+	public static Image getImageFromEdgeList(int height, int width, List<TreeEdges> edges, String title){
+		Image img = new Image(width, height, 3, title);
+		for(TreeEdges edge : edges){
+			img.drawLine(edge.getNode_s(), edge.getNode_d());
+		}
+		return img;
 	}
 	
 	public static void main(String args[]){
-		for(int i = 0; i < 10; i++)
-			Util.logln(genarateRandom(0, 5));
+		TreeEdges edge2 = new TreeEdges(new Node(0,10), new Node(30, 10));
+		TreeEdges edge1 = new TreeEdges(new Node(5,5), new Node(25, 25));
+		Util.logln(Util.isLineCrossing(edge1, edge2));
+		
+		/*Node []nodes = new Node[]{  new Node(110, 15), new Node(15, 135), new Node(28, 28), new Node(130, 60), new Node(45,125), new Node(175, 140), 
+				new Node(60,10), new Node(80, 140), new Node(10,60)};*/
+		/*Node []nodes = new Node[]{  new Node(50, 50), new Node(180, 150), new Node(50, 150), new Node(160, 50), new Node(85,180), new Node(85, 20)};
+		Util.logln(nodes.length);
+		List<TreeEdges> tours = new ArrayList<>();
+		for(int i = 0; i < nodes.length; i++){
+			tours.add(new TreeEdges(nodes[i], nodes[(i+1) % nodes.length]));
+		}
+		Image initialImage = getImageFromEdgeList(200, 200, tours, "initial");
+		initialImage.showImage();
+		int edgeNumber = tours.size();
+		for(int k = 0; k < 1; k++){
+			for(int i = 0; i < edgeNumber; i++){
+				for(int j = i+1; j < edgeNumber; j++){
+					TreeEdges edge1 = tours.get(i);
+					TreeEdges edge2 = tours.get(j);
+					//Util.logln(edge1);
+					if(Util.isLineCrossing(edge1, edge2)){
+						Util.swapDestinationPointInEdges(edge1, edge2);
+						Util.logln(i + " ==> " + j + " -- -- -- "  + k);
+						int minIdx = i + 1;
+						int maxIdx = j - 1;
+						while(maxIdx > minIdx){
+							TreeEdges one = tours.get(minIdx).reverseEdge();
+							TreeEdges two = tours.get(maxIdx).reverseEdge();
+							tours.set(minIdx, two);
+							tours.set(maxIdx, one);
+							minIdx++;
+							maxIdx--;
+						}
+						if(minIdx == maxIdx){
+							tours.set(minIdx, tours.get(minIdx).reverseEdge());
+						}
+					}
+				}
+				Image img = Util.getImageFromEdgeList(200, 200, tours, "After i = " + i);
+				img.showImage();
+			}
+		}*/
 	}
 	
 	public static List<TreeEdges> generateMST(List<Node> nodeList) throws IOException {

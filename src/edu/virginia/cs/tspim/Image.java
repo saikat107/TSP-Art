@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import edu.virginia.cs.tspim.gui.MainGui;
+import edu.virginia.cs.tspim.util.Config;
 import edu.virginia.cs.tspim.util.Util;
 
 public class Image extends JFrame{
@@ -93,7 +94,7 @@ public class Image extends JFrame{
 	        return this;
 	    }// </editor-fold>                        
 
-	    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {                                            
+	    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {       
 	        this.dispose();
 	    }                                           
 
@@ -127,10 +128,16 @@ public class Image extends JFrame{
 	int height;
 	int scale;
 	private String title;
+	private BufferedImage originalImage;
 	
 	public Image(int width, int height, int scale, String title){
 		this.scale = scale;
 		this.title = title;
+		try {
+			originalImage = ImageIO.read(new File(Config.getInstance().getFileName()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		nodes = new int[height * scale][width *scale];
 		this.width = scale * width;
 		this.height = scale * height;
@@ -145,8 +152,42 @@ public class Image extends JFrame{
 		nodes[n.getX()][n.getY()] = 0;
 	}
 	
+	public void setColoredNodeInImage(Node n, int color){
+		nodes[n.getX()][n.getY()] = color;
+	}
+	
+	public void setScaledNodeInImage(Node n){
+		nodes[scale * n.getX()] [scale * n.getY()] = 0;
+	}
+	
+	private int getAppropriateColot(int c1, int c2, int steps, int i){
+		int a1 = (int)(c1 & 0xff);
+		int r1 = (int)((c1 >> 4) & 0xff);
+		int g1 = (int)((c1 >> 8) & 0xff);
+		int b1 = (int)((c1 >> 12) & 0xff);
+		
+		int a2 = (int)(c2 & 0xff);
+		int r2 = (int)((c2 >> 4) & 0xff);
+		int g2 = (int)((c2 >> 8) & 0xff);
+		int b2 = (int)((c2 >> 12) & 0xff);
+		
+		double da = (a1 - a2) / (double)steps;
+		double dr = (r1 - r2) / (double)steps;
+		double dg = (g1 - g2) / (double)steps;
+		double db = (b1 - b2) / (double)steps;
+		
+		int a = (int) Math.round(a1 + da * i);
+		int r = (int) Math.round(r1 + dr * i);
+		int g = (int) Math.round(g1 + dg * i);
+		int b = (int) Math.round(b1 + db * i);
+		int c = (b << 12) | (g << 8) | (r << 4) | (a);
+		return c;
+	}
+	
 	public void drawLine(Node a1, Node b1){
-
+		int c1 = originalImage.getRGB(a1.getY(), a1.getX());
+		int c2 = originalImage.getRGB(b1.getY(), b1.getX());
+		
 //		Util.logln(a);
 //		Util.logln(b);
 		Node a = new Node(scale * a1.getX(), scale * a1.getY());
@@ -166,7 +207,9 @@ public class Image extends JFrame{
 		double y = a.getY();
 		for(int i = 0; i < steps; i++){
 			Node point = new Node((int)Math.round(x), (int)Math.round(y));
-			setNodeInImage(point);
+			//setNodeInImage(point);
+			int c = getAppropriateColot(c1, c2, steps, i);
+			setColoredNodeInImage(point, c);
 			x += xImcr;
 			y += yIncr;
 		}
@@ -191,6 +234,12 @@ public class Image extends JFrame{
 	public void showImage(){
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		BufferedImage iconImage = extractImage();
-        new ImageViewer(title).initComponents(iconImage).setVisible(true);;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				new ImageViewer(title).initComponents(iconImage).setVisible(true);;
+			}
+		}).start();;
+        
 	}
 }
