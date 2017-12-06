@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
@@ -22,8 +24,9 @@ public class Image extends JFrame{
 	
 	class ImageViewer extends JFrame{
 		private String title;
-		private BufferedImage img = null;
-		
+		private BufferedImage colorImg = null;
+		private BufferedImage binaryImg = null;
+		private boolean state = false;
 		public ImageViewer(String title) {
 			super(title);
 			this.title = title;
@@ -36,19 +39,22 @@ public class Image extends JFrame{
 	     */
 	    @SuppressWarnings("unchecked")
 	    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
-	    private ImageViewer initComponents(BufferedImage iconImg) {
-	    	this.img = iconImg;
+	    private ImageViewer initComponents(BufferedImage colorImage, BufferedImage binaryImage) {
+	    	this.colorImg = colorImage;
+	    	this.binaryImg = binaryImage;
 	        jScrollPane1 = new javax.swing.JScrollPane();
 	        imageLabel = new javax.swing.JLabel();
 	        saveButton = new javax.swing.JButton();
 	        closeButton = new javax.swing.JButton();
+	        showColor = new javax.swing.JToggleButton();
+	        showColor.setSelected(true);
 
 	        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
 	        imageLabel.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+	        imageLabel.setIcon(new ImageIcon(this.colorImg));
 	        imageLabel.setToolTipText("");
 	        imageLabel.setName(""); // NOI18N
-	        imageLabel.setIcon(new ImageIcon(iconImg));
 	        imageLabel.setPreferredSize(new java.awt.Dimension(width, height));
 	        jScrollPane1.setViewportView(imageLabel);
 
@@ -68,13 +74,22 @@ public class Image extends JFrame{
 	            }
 	        });
 
+	        showColor.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+	        showColor.setText("Show BW");
+	        showColor.addActionListener(new java.awt.event.ActionListener() {
+	            public void actionPerformed(java.awt.event.ActionEvent evt) {
+	                showColorActionPerformed(evt);
+	            }
+	        });
+
 	        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
 	        getContentPane().setLayout(layout);
 	        layout.setHorizontalGroup(
 	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 800, Short.MAX_VALUE)
 	            .addGroup(layout.createSequentialGroup()
-	                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                .addComponent(showColor)
+	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 	                .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
 	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 	                .addComponent(closeButton, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -82,19 +97,32 @@ public class Image extends JFrame{
 	        layout.setVerticalGroup(
 	            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
 	            .addGroup(layout.createSequentialGroup()
-	                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 713, Short.MAX_VALUE)
+	                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE)
 	                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
 	                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
 	                    .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-	                    .addComponent(closeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+	                    .addComponent(closeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	                    .addComponent(showColor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 	        );
 
 	        pack();
-	        setTitle(title);
+	        setTitle(this.title);
 	        return this;
-	    }// </editor-fold>                        
+	    }// </editor-fold>                         
 
-	    private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {       
+	    protected void showColorActionPerformed(ActionEvent evt) {
+			if(this.showColor.isSelected()){
+				this.imageLabel.setIcon(new ImageIcon(this.colorImg));
+				showColor.setText("Show BW");
+			}
+			else{
+				this.imageLabel.setIcon(new ImageIcon(this.binaryImg));
+				showColor.setText("Show Color");
+			}
+			this.repaint();
+		}
+
+		private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {       
 	        this.dispose();
 	    }                                           
 
@@ -121,6 +149,7 @@ public class Image extends JFrame{
 	    private javax.swing.JLabel imageLabel;
 	    private javax.swing.JScrollPane jScrollPane1;
 	    private javax.swing.JButton saveButton;
+	    private javax.swing.JToggleButton showColor;
 	    // End of variables declaration
 	}
 	int [][] nodes;
@@ -129,6 +158,7 @@ public class Image extends JFrame{
 	int scale;
 	private String title;
 	private BufferedImage originalImage;
+	int [][]binaryNodes;
 	
 	public Image(int width, int height, int scale, String title){
 		this.scale = scale;
@@ -139,37 +169,42 @@ public class Image extends JFrame{
 			e.printStackTrace();
 		}
 		nodes = new int[height * scale][width *scale];
+		binaryNodes = new int[height * scale][width *scale];
 		this.width = scale * width;
 		this.height = scale * height;
 		for(int i = 0; i < this.height; i++){
 			for(int j = 0; j < this.width; j++){
-				nodes[i][j] = 0xffffffff; //Initialize all pixel as White
+				nodes[i][j] = 0; //Initialize all pixel as White
+				binaryNodes[i][j] = 0xffffffff; //Initialize all pixel as White
 			}
 		}
 	}
 	
 	public void setNodeInImage(Node n){
 		nodes[n.getX()][n.getY()] = 0;
+		binaryNodes[n.getX()][n.getY()] = 0;
 	}
 	
 	public void setColoredNodeInImage(Node n, int color){
 		nodes[n.getX()][n.getY()] = color;
+		binaryNodes[n.getX()][n.getY()] = 0;
 	}
 	
 	public void setScaledNodeInImage(Node n){
 		nodes[scale * n.getX()] [scale * n.getY()] = 0;
+		binaryNodes[scale * n.getX()] [scale * n.getY()] = 0;
 	}
 	
 	private int getAppropriateColot(int c1, int c2, int steps, int i){
 		int a1 = (int)(c1 & 0xff);
-		int r1 = (int)((c1 >> 4) & 0xff);
-		int g1 = (int)((c1 >> 8) & 0xff);
-		int b1 = (int)((c1 >> 12) & 0xff);
+		int r1 = (int)((c1 >> 8) & 0xff);
+		int g1 = (int)((c1 >> 16) & 0xff);
+		int b1 = (int)((c1 >> 24) & 0xff);
 		
 		int a2 = (int)(c2 & 0xff);
-		int r2 = (int)((c2 >> 4) & 0xff);
-		int g2 = (int)((c2 >> 8) & 0xff);
-		int b2 = (int)((c2 >> 12) & 0xff);
+		int r2 = (int)((c2 >> 8) & 0xff);
+		int g2 = (int)((c2 >> 16) & 0xff);
+		int b2 = (int)((c2 >> 24) & 0xff);
 		
 		double da = (a1 - a2) / (double)steps;
 		double dr = (r1 - r2) / (double)steps;
@@ -180,7 +215,7 @@ public class Image extends JFrame{
 		int r = (int) Math.round(r1 + dr * i);
 		int g = (int) Math.round(g1 + dg * i);
 		int b = (int) Math.round(b1 + db * i);
-		int c = (b << 12) | (g << 8) | (r << 4) | (a);
+		int c = (b << 24) | (g << 16) | (r << 8) | (a);
 		return c;
 	}
 	
@@ -225,6 +260,16 @@ public class Image extends JFrame{
 		return img;
 	}
 	
+	public BufferedImage extractBinaryImage(){
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		for(int i = 0; i < height; i++){
+			for(int j = 0; j < width; j++){
+				img.setRGB(j, i, binaryNodes[i][j]);
+			}
+		}
+		return img;
+	}
+	
 	public void writeImageToDisk(String path) throws IOException{
 		File file = new File(path);
 		ImageIO.write(extractImage(), "jpg", file);
@@ -233,11 +278,12 @@ public class Image extends JFrame{
 
 	public void showImage(){
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		BufferedImage iconImage = extractImage();
+		BufferedImage coloredImage = extractImage();
+		BufferedImage binaryImage = extractBinaryImage();
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				new ImageViewer(title).initComponents(iconImage).setVisible(true);;
+				new ImageViewer(title).initComponents(coloredImage, binaryImage).setVisible(true);;
 			}
 		}).start();;
         
